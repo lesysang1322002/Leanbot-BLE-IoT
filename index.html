@@ -49,7 +49,24 @@
     <div class="item">
         <label class="sensor-name"><strong>Soil Moisture</strong></label>
         <textarea class="sensor-value monospace" id="Soil Moisture" readonly></textarea>
-        <button class="btn btn-primary-test" id="Soil-Moisture-button" onclick="send('SoilMoisture Test')">Test</button>
+        <div class = "row">
+            <div class="form-group">
+                <label for="message">Min</label>
+                <textarea id="SoilMin" name="message" class = "monospace"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="message">Max</label>
+                <textarea id="SoilMax" name="message" class = "monospace"></textarea>
+            </div>
+
+
+            <div class="form-group">
+                <label for="message">Range</label>
+                <textarea id="SoilRange" name="message" class = "monospace"></textarea>
+            </div>
+        </div>
+        <button class="btn btn-primary-test" id="Soil-Moisture-button" onclick="TestSoilMoisture()">Test</button>
     </div>
     </div>
 

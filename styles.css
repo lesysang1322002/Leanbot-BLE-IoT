@@ -163,6 +163,11 @@ p {
   border: 2px solid #ccc;
   border-radius: 3px;
 }
+
+#SoilMin, #SoilMax, #SoilRange {
+  width: 50px;
+}
+
 .row{
   padding-top: 10px;
   display: flex;

@@ -23,20 +23,20 @@ void setup() {
 
 void loop() {
   Serial.println("Test IoT Modules");
-  serial_checkCommand();
   delay(100);
+  serial_checkCommand();
 }
 
 void serial_checkCommand() {
   if (Serial.available() <= 0) return;
   String command = Serial.readStringUntil('\n');
 
-  if (HC_SR501_checkCommand(command)) return;
-  if (OLED_checkCommand(command)) return;
-  if (SoilMoisture_checkCommand(command)) return;
-  if (BME280_checkCommand(command)) return;
+  // if (HC_SR501_checkCommand(command)) return;
+  // if (OLED_checkCommand(command)) return;
+  // if (SoilMoisture_checkCommand(command)) return;
+  // if (BME280_checkCommand(command)) return;
   if (WiFi_checkCommand(command)) return;
-  if (MAX30102_checkCommand(command)) return;
+  // if (MAX30102_checkCommand(command)) return;
 
   Serial.println("Unknown command");
 }
@@ -83,6 +83,7 @@ void OLED_drawCircle() {
     oled.drawCircle(60, 30, 25, U8G2_DRAW_ALL);
   } while (oled.nextPage());
   Serial.println("OLED Circle");
+  delay(100);
 }
 
 void OLED_drawFrame() {
@@ -91,6 +92,7 @@ void OLED_drawFrame() {
     oled.drawFrame(40, 5, 50, 50);
   } while (oled.nextPage());
   Serial.println("OLED Frame");
+  delay(100);
 }
 
 boolean OLED_checkCommand(String command) {
@@ -184,13 +186,24 @@ void WiFi_setPassword(String newPassword) {
   password = newPassword;
 }
 
-void WiFi_connect() {
-  Serial.print("SSID ");
+boolean WiFi_connect() {
+  Serial.print("SSID: ");
   Serial.println(ssid);
   delay(100);
-  Serial.print("Password ");
+  Serial.print("Password: ");
   Serial.println(password);
   delay(100);
+
+  if (LbIoT.Wifi.status() != WL_CONNECTED) {
+    if (LbIoT.Wifi.begin(ssid.c_str(), password.c_str()) < 0) {
+      Serial.println("WiFi Connection Error");
+      return false; 
+    } else {
+      Serial.println("WiFi Connected");
+      delay(100);
+    }
+  }
+  return true;
 }
 
 boolean WiFi_checkCommand(String command) {
@@ -199,7 +212,7 @@ boolean WiFi_checkCommand(String command) {
   } else if (command.startsWith("WiFi Password")) {
     WiFi_setPassword(command.substring(14));
   } else if (command == "WiFi Connect") {
-    WiFi_connect();
+    return WiFi_connect();
   } else {
     return false;
   }

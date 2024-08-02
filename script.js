@@ -131,6 +131,13 @@ let checkmess = false;
 
 let string = "";
 let stringfromLeanbot = "Test IoT Modules";
+let checkFirstValue = true;
+let MinSoilMoisture;
+let MaxSoilMoisture;
+let TextAreaSoilMin = document.getElementById("SoilMin");
+let TextAreaSoilMax = document.getElementById("SoilMax");
+let TextAreaSoilRange = document.getElementById("SoilRange");
+
 
 let SSIDfromWeb = "";
 let PasswordfromWeb = "";
@@ -157,7 +164,8 @@ function handleChangedValue(event) {
     let n = valueString.length;
     if(valueString[n-1] === '\n'){
         string += valueString;
-        console.log(string);
+        let StringWiFi = string;
+        console.log("Nano-> " + string);
         string = string.replace(/(\r\n|\n|\r)/gm, "");
         let arrString = string.split(/[ \t\r\n]+/);
 
@@ -175,6 +183,21 @@ function handleChangedValue(event) {
         }
         if(arrString[0] === 'SoilMoisture'){
             TextAreaSoilMoisture.value = arrString[1];
+            let SoilMoistureInt = parseInt(arrString[1]);
+            if(checkFirstValue){
+                checkFirstValue = false;
+                MinSoilMoisture = SoilMoistureInt;
+                MaxSoilMoisture = SoilMoistureInt;
+            }
+            if(SoilMoistureInt < MinSoilMoisture){
+                MinSoilMoisture = SoilMoistureInt;
+            }
+            if(SoilMoistureInt > MaxSoilMoisture){
+                MaxSoilMoisture = SoilMoistureInt;
+            }
+            TextAreaSoilMin.value = MinSoilMoisture;
+            TextAreaSoilMax.value = MaxSoilMoisture;
+            TextAreaSoilRange.value = MaxSoilMoisture - MinSoilMoisture;
         }
         if(arrString[0] === 'BME280'){
             TextAreaBME280.value = string.substring(6, string.length);
@@ -193,11 +216,11 @@ function handleChangedValue(event) {
         }
         if(arrString[0] === 'SSID'){
             SSIDfromLeanbot = arrString[1];
-            console.log(SSIDfromLeanbot);
+            // console.log(SSIDfromLeanbot);
         }
         if(arrString[0] === 'Password'){
             PasswordfromLeanbot = arrString[1];
-            console.log(PasswordfromLeanbot);
+            // console.log(PasswordfromLeanbot);
             if(SSIDfromLeanbot == SSIDfromWeb && PasswordfromLeanbot == PasswordfromWeb){
                 TextAreaESP.value = "Connect to WiFi successfully!";
             }
@@ -237,7 +260,7 @@ async function connectWiFi() {
 
     // Gửi lệnh kết nối
     send("WiFi Connect");
-    await delay(100); // Chờ 100ms
+    await delay(100); // Chờ 100ms 
 }
 
 function changeImageOled(){
@@ -247,6 +270,11 @@ function changeImageOled(){
     else{
         send("OLED Test1");
     }
+}
+
+function TestSoilMoisture(){
+    send("SoilMoisture Test");
+    checkFirstValue = true;
 }
 
 document.addEventListener('DOMContentLoaded', (event) => {
