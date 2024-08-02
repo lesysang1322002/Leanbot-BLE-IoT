@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Leanbot BLE IoT</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" type="text/css" href="styles.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="info-popup" id="infopopup" style="display:none;">
+        <h6><strong>Incorrect data from Leanbot.</strong></h6>
+        <h6><strong> Please upload the following code to Leanbot:</strong></h6>
+        <a href="https://git.pythaverse.space/lesang/Bao_cao/blob/master/LeanbotBLE_Calibration/LeanbotBLE_Calibration.ino">https://git.pythaverse.space/lesang/Bao_cao/
+            blob/master/LeanbotBLE_Calibration/
+            LeanbotBLE_Calibration.ino</a>
+    </div>
+    <nav class="navbar" style="padding: 0px 0px;">
+        <button class="btn btn-primary-scan" id="toggleButton" onclick="toggleFunction()" style="padding: 0px 0px">
+            <img src="ble_logo.png" alt="Scan Icon"><span id="buttonText">Scan</span>  
+        </button>
+        <a class="navbar-brand center-text" href="#" id="navbarTitle" style="color: red">SCAN to connect</a>
+        <div class="info-container">
+            <button id="infoButton"><i class="fas fa-info-circle"></i></button>
+            <div class="info-content" id="infoContent">
+                <h6><strong>Leanbot BLE Advanced</strong></h6>
+                <h6><strong>Device: JDY-33</strong></h6>
+                <h6>Service UUID: 0000ffe0-0000-1000-8000-00805f9b34fb</h6>
+                <h6>Characteristic UUID: 0000ffe1-0000-1000-8000-00805f9b34fb</h6>
+                <footer class="text-center py-2" style="color: red">
+                    &copy; DTT
+                </footer>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+    <div class = "item">
+        <label class="sensor-name"><strong>HC-SR501</strong></label>
+        <textarea class="sensor-value monospace" id="HC-SR501" readonly></textarea>
+        <button class="btn btn-primary-test" id="HC-SR501-button" onclick="send('HC-SR501 Test')">Test</button>
+    </div>
+    <div class="item">
+        <label class="sensor-name"><strong>OLED</strong></label>
+        <textarea class="sensor-value monospace" id="OLED" readonly></textarea>
+        <button class="btn btn-primary-test" id="change-image" onclick="changeImageOled()">Change Image</button>
+        <button class="btn btn-primary-test" id="OLED-button" onclick="send('OLED Test1')">Test</button>
+    </div>
+    <div class="item">
+        <label class="sensor-name"><strong>Soil Moisture</strong></label>
+        <textarea class="sensor-value monospace" id="Soil Moisture" readonly></textarea>
+        <button class="btn btn-primary-test" id="Soil-Moisture-button" onclick="send('SoilMoisture Test')">Test</button>
+    </div>
+    </div>
+
+    <div class="container">
+    <div class = "item">
+        <label class="sensor-name"><strong>BME280</strong></label>
+        <textarea class="sensor-value monospace" id="BME280" readonly></textarea>
+        <div class = "row">
+        <div class = "column">
+            <div class="form-group">
+                <label for="message">Tem</label>
+                <textarea id="BME_Tem" name="message" class = "monospace"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="message">Pres</label>
+                <textarea id="BME_Pres" name="message" class = "monospace"></textarea>
+            </div>
+            </div>
+        <div class = "column">
+            <div class="form-group">
+                <label for="message">Hum</label>
+                <textarea id="BME_Hum" name="message" class = "monospace"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="message">Alt</label>
+                <textarea id="BME_Alt" name="message" class = "monospace"></textarea>
+            </div>
+        </div>
+        </div>
+        <button class="btn btn-primary-test" id="BME280-button" onclick="send('BME280 Test')">Test</button>
+    </div>
+    <div class="item">
+        <label class="sensor-name"><strong>WiFi</strong></label>
+        <textarea class="sensor-value monospace" id="ESP" readonly></textarea>
+        <div>
+            <label for="ssid">SSID:</label>
+            <input type="text" id="ssid" name="ssid" oninput="checkInputs()">
+        </div>
+        <div>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" oninput="checkInputs()">
+        </div>
+        <button class="btn btn-primary-test" id="ESP-button" onclick="connectWiFi()" disabled>Test</button>
+    </div>
+    
+    <div class="item">
+        <label class="sensor-name"><strong>MAX30102</strong></label>
+        <textarea class="sensor-value monospace" id="MAX30102" readonly></textarea>
+        <button class="btn btn-primary-test" id="MAX30102-button" onclick="send('MAX30102 Test')">Test</button>
+    </div>
+    </div>
+    
+    <p class="openLinkCode"> <a href="https://git.pythaverse.space/lesang/Bao_cao/blob/master/LeanbotAdvance/LeanbotAdvance.ino">Leanbot code</a></p>
+</body>
+    <script type = "text/javascript" src="script.js"></script>
+</html>

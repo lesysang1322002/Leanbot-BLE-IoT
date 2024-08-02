@@ -1,0 +1,204 @@
+body {
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+#navbarTitle {
+  margin-right: 50px;
+  font-size: 16px;
+  font-weight: bold;
+}
+.btn-primary-scan {
+  display: flex;
+  align-items: center;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  color: #ffffff !important;
+  background-color: #2c5f85 !important;
+  border-color: #000000 !important;
+  width: 80px;
+  height: auto;
+}
+.btn-primary-scan img {
+  padding-bottom: 2px;
+  width: 22px;
+  height: auto;
+}
+#buttonText {
+  font-weight: bold;
+}
+#infoButton {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  padding: 0 0 px;
+  background: #ffffff;
+  color: rgb(38, 15, 15);
+  border: none;
+  font-size: 17px;
+  cursor: pointer;
+}
+.info-content {
+  display: none;
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  background-color: #f1f1f1;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  white-space: pre-line;
+  line-height: 0.1;
+}
+.info-popup {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #f1f1f1;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  z-index: 1;
+  white-space: pre-line;
+  line-height: 1;
+}
+body h6 {
+  font-size: 12px;
+}
+footer {
+  background-color: #343a40;
+  color: #fff;
+}
+.center-text {
+  text-align: center;
+  color: #333;
+  font-size: 24px;
+}
+p {
+  font-size: 15px;
+  margin: 0;
+  font-weight: bold;
+  text-align: center;
+}
+.openLinkCode {
+  position: fixed;
+  bottom: 0;
+  width: 100vw;
+  text-align: center;
+}
+.sensor-name {
+  text-align: center;
+  margin-bottom: 5px;
+}
+.sensor-value {
+  border: 3px solid #ccc;
+  padding: 10px;
+  resize: none;
+  text-align: center;
+  white-space: nowrap;
+  border-radius: 5px;
+}
+
+.btn-primary-test {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Căn giữa nội dung trong nút */
+  margin: 5px auto; /* Căn giữa nút theo chiều ngang */
+  color: #ffffff !important;
+  background-color: #1d78bd !important;
+  border-color: #000000 !important;
+  width: 100px;
+  height: auto;
+}
+#change-image {
+  width: 160px;
+}
+.monospace {
+  font-family: 'Roboto Mono', monospace;
+}
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0px;
+}
+.item {
+  width: calc(33.33% - 20px);
+  margin: 10px;
+  background-color: #f0f0f0;
+  padding: 20px;
+  box-sizing: border-box;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+}
+
+.item.active {
+  background-color: lightblue;
+}
+
+.form-group {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.form-group label {
+  text-align: right;
+  font-weight: bold;
+  padding-right: 3px;
+  margin-bottom: 0px;
+}
+.form-group textarea {
+  flex: 1;
+  height: 30px;
+  width: 90px;
+  resize: none;
+  text-align: center;
+  font-size: 14px;
+  border: 2px solid #ccc;
+  border-radius: 3px;
+}
+.row{
+  padding-top: 10px;
+  display: flex;
+  justify-content: space-around;
+}
+
+input[type="text"] {
+  width: 71%;
+  margin: 10px 10px;
+  /* padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 4px; */
+}
+
+input[type="password"] {
+  margin: 10px 10px;
+  /* padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 4px; */
+}
+
+@media screen and (orientation: landscape) {
+  .item {
+      width: calc(33.33% - 20px);
+      height: 40vh;
+  }
+}
+@media screen and (orientation: portrait) {
+  .item {
+      width: calc(100% - 20px);
+  }
+  #navbarTitle {
+      font-size: 12px;
+  }
+}
