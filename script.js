@@ -3,9 +3,11 @@ var bleCharacteristic = '0000ffe1-0000-1000-8000-00805f9b34fb';
 var gattCharacteristic;
 var bluetoothDeviceDetected;
 
-let Text_Area = document.getElementById("textareaNotification");
-let Text_RGBLeds = document.getElementById("textAreaRGB");
-let Text_Steppers = document.getElementById("textAreaStepper");
+let buttons = document.querySelectorAll('.btn-primary-test');
+
+buttons.forEach(button => {
+    button.disabled = true;
+});
 
 function isWebBluetoothEnabled() {
     if (!navigator.bluetooth) {
@@ -17,8 +19,8 @@ function isWebBluetoothEnabled() {
 }
 function requestBluetoothDevice() {
     if(isWebBluetoothEnabled){
-logstatus('Finding...');
-navigator.bluetooth.requestDevice({
+    logstatus('Finding...');
+    navigator.bluetooth.requestDevice({
     filters: [{
         services: ['0000ffe0-0000-1000-8000-00805f9b34fb'] }] 
     })         
@@ -44,6 +46,7 @@ navigator.bluetooth.requestDevice({
         checkMessageWithin5Seconds();
         document.getElementById("buttonText").innerText = "Rescan";
         checkconnected = true;
+        enableButtons();
         gattCharacteristic = characteristic
         gattCharacteristic.addEventListener('characteristicvaluechanged', handleChangedValue);   
         return gattCharacteristic.startNotifications();
@@ -71,11 +74,30 @@ function onDisconnected(event) {
     logstatus("SCAN to connect");
     document.getElementById("buttonText").innerText = "Scan";
     console.log(`Device ${device.name} is disconnected.`);
+    Rescan();
 }
 
-function send(data){
-    console.log("You -> " + data + "\n");
-    gattCharacteristic.writeValue(str2ab(data+"\n"));
+function send(data) {
+    if (gattCharacteristic) {
+        console.log("You -> " + data);
+        gattCharacteristic.writeValue(str2ab(data + "\n"));
+    } else {
+        console.log("GATT Characteristic not found.");
+    }
+}
+
+function enableButtons() {
+    buttons.forEach(button => {
+        button.disabled = false;
+    });
+    const button = document.getElementById('ESP-button');
+    button.disabled = true;
+}
+
+function disableButtons() {
+    buttons.forEach(button => {
+        button.disabled = true;
+    });
 }
 
 function str2ab(str){
@@ -106,9 +128,14 @@ function toggleFunction() {
 
 function Rescan(){
     checkconnected = false;
-    clearTimeout(timeoutId);
     checkFirstValue = true;
-    // checkmessage = false;
+    checkmess = false;
+    disableButtons();
+    clearTimeout(timeoutCheckMessage);
+    clearTextArea();
+    document.querySelectorAll('.item').forEach(item => {
+        item.classList.remove('active');
+    });
 }
 
 function checkMessageWithin5Seconds() {
@@ -156,6 +183,24 @@ let TextAreaBME_Hum = document.getElementById("BME_Hum");
 let TextAreaBME_Pres = document.getElementById("BME_Pres");
 let TextAreaBME_Alt = document.getElementById("BME_Alt");
 
+function clearTextArea(){
+    TextAreaHC_SR501.value = "";
+    TextAreaOLED.value = "";
+    TextAreaSoilMoisture.value = "";
+    TextAreaBME280.value = "";
+    TextAreaESP.value = "";
+    TextAreaMAX30102.value = "";
+    TextAreaBME_Tem.value = "";
+    TextAreaBME_Hum.value = "";
+    TextAreaBME_Pres.value = "";
+    TextAreaBME_Alt.value = "";
+    TextAreaSoilMin.value = "";
+    TextAreaSoilMax.value = "";
+    TextAreaSoilRange.value = "";
+    document.getElementById("ssid").value = "";
+    document.getElementById("password").value = "";
+}
+
 function handleChangedValue(event) {
     let data = event.target.value;
     let dataArray = new Uint8Array(data.buffer);
@@ -164,7 +209,6 @@ function handleChangedValue(event) {
     let n = valueString.length;
     if(valueString[n-1] === '\n'){
         string += valueString;
-        let StringWiFi = string;
         console.log("Nano-> " + string);
         string = string.replace(/(\r\n|\n|\r)/gm, "");
         let arrString = string.split(/[ \t\r\n]+/);
@@ -208,23 +252,12 @@ function handleChangedValue(event) {
                 TextAreaBME_Alt.value = arrString[8];
             }
         }
-        if(arrString[0] === 'ESP'){
-            TextAreaESP.value = string;
+        if(arrString[0] === 'WiFi'){
+            TextAreaESP.value = string.substring(5, string.length);
         }
         if(arrString[0] === 'MAX30102'){
             TextAreaMAX30102.value = string.substring(9, string.length);
-        }
-        if(arrString[0] === 'SSID'){
-            SSIDfromLeanbot = arrString[1];
-            // console.log(SSIDfromLeanbot);
-        }
-        if(arrString[0] === 'Password'){
-            PasswordfromLeanbot = arrString[1];
-            // console.log(PasswordfromLeanbot);
-            if(SSIDfromLeanbot == SSIDfromWeb && PasswordfromLeanbot == PasswordfromWeb){
-                TextAreaESP.value = "Connect to WiFi successfully!";
-            }
-        }
+        }  
         string = "";
     }
     else{
@@ -261,13 +294,16 @@ async function connectWiFi() {
     // Gửi lệnh kết nối
     send("WiFi Connect");
     await delay(100); // Chờ 100ms 
+    if(TextAreaESP.value != "Connected"){
+    TextAreaESP.value = "Connecting to " + SSIDfromWeb + "...";
+    }
 }
 
 function changeImageOled(){
     if(TextAreaOLED.value === "Circle"){
         send("OLED Test2");
     }
-    else{
+    else if(TextAreaOLED.value === "Frame"){
         send("OLED Test1");
     }
 }
@@ -278,8 +314,6 @@ function TestSoilMoisture(){
 }
 
 document.addEventListener('DOMContentLoaded', (event) => {
-    const buttons = document.querySelectorAll('.btn-primary-test');
-
     buttons.forEach(button => {
         button.addEventListener('click', () => {
             // Xóa lớp 'active' khỏi tất cả các mục
@@ -308,35 +342,5 @@ document.addEventListener('DOMContentLoaded', function () {
   
     document.addEventListener('click', function () {
         infoContent.style.display = 'none';
-    });
-});
-
-function showTab(tabId) {
-    const tabs = document.querySelectorAll('.tab');
-    const contents = document.querySelectorAll('.content');
-    
-    tabs.forEach(tab => {
-        tab.classList.remove('active');
-    });
-    contents.forEach(content => {
-        content.classList.remove('active');
-    });
-    
-    document.getElementById(tabId).classList.add('active');
-    document.getElementById('tab' + tabId.slice(-1)).classList.add('active');
-}
-
-var tabs = document.querySelectorAll('.tab');
-
-// Add event listener to each tab
-tabs.forEach(function(tab) {
-    tab.addEventListener('click', function() {
-        // Remove active class from all tabs
-        tabs.forEach(function(tab) {
-            tab.classList.remove('active');
-        });
-
-        // Add active class to clicked tab
-        this.classList.add('active');
     });
 });

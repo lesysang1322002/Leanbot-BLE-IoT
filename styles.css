@@ -175,22 +175,11 @@ p {
 }
 
 input[type="text"] {
-  width: 71%;
-  margin: 10px 10px;
-  /* padding: 12px 20px;
-  margin: 8px 0;
-  box-sizing: border-box;
-  border: 2px solid #ccc;
-  border-radius: 4px; */
+  margin-top: 10px;
 }
 
-input[type="password"] {
-  margin: 10px 10px;
-  /* padding: 12px 20px;
-  margin: 8px 0;
-  box-sizing: border-box;
-  border: 2px solid #ccc;
-  border-radius: 4px; */
+#ssid{
+  margin-left: 35px;
 }
 
 @media screen and (orientation: landscape) {

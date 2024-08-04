@@ -5,6 +5,8 @@
 #include "MAX30105.h"         // https://github.com/sparkfun/SparkFun_MAX3010x_Sensor_Library
 #include "heartRate.h"
 
+#define COMMAND_MAX_LENGTH 30
+
 /////////////////////////////////////////////
 // Main Setup and Loop
 /////////////////////////////////////////////
@@ -22,23 +24,27 @@ void setup() {
 }
 
 void loop() {
-  Serial.println("Test IoT Modules");
+  Serial.println(F("Test IoT Modules"));
   delay(100);
   serial_checkCommand();
 }
 
 void serial_checkCommand() {
   if (Serial.available() <= 0) return;
-  String command = Serial.readStringUntil('\n');
 
-  // if (HC_SR501_checkCommand(command)) return;
-  // if (OLED_checkCommand(command)) return;
-  // if (SoilMoisture_checkCommand(command)) return;
-  // if (BME280_checkCommand(command)) return;
+  const char* command = Serial.readStringUntil('\n').c_str();
+  Serial.print(F("Command: "));
+  Serial.println(command);
+
   if (WiFi_checkCommand(command)) return;
-  // if (MAX30102_checkCommand(command)) return;
+  if (HC_SR501_checkCommand(command)) return;
+  if (OLED_checkCommand(command)) return;
+  if (SoilMoisture_checkCommand(command)) return;
+  if (BME280_checkCommand(command)) return;
+  if (MAX30102_checkCommand(command)) return;
 
-  Serial.println("Unknown command");
+  Serial.print(F("Unknown command: "));
+  Serial.println(command);
 }
 
 /////////////////////////////////////////////
@@ -53,19 +59,18 @@ void HC_SR501_begin() {
 void HC_SR501_test() {
   while (Serial.available() <= 0) {
     int pirValue = digitalRead(HC_SR501_Pin);
-    Serial.print("HC-SR501 ");
+    Serial.print(F("HC-SR501 "));
     Serial.println(pirValue);
     delay(100);
   }
 }
 
-boolean HC_SR501_checkCommand(String command) {
-  if (command == "HC-SR501 Test") {
+boolean HC_SR501_checkCommand(const char* command) {
+  if (strcmp(command, "HC-SR501 Test") == 0) {
     HC_SR501_test();
-  } else {
-    return false;
+    return true;
   }
-  return true;
+  return false;
 }
 
 /////////////////////////////////////////////
@@ -82,7 +87,7 @@ void OLED_drawCircle() {
   do {
     oled.drawCircle(60, 30, 25, U8G2_DRAW_ALL);
   } while (oled.nextPage());
-  Serial.println("OLED Circle");
+  Serial.println(F("OLED Circle"));
   delay(100);
 }
 
@@ -91,19 +96,19 @@ void OLED_drawFrame() {
   do {
     oled.drawFrame(40, 5, 50, 50);
   } while (oled.nextPage());
-  Serial.println("OLED Frame");
+  Serial.println(F("OLED Frame"));
   delay(100);
 }
 
-boolean OLED_checkCommand(String command) {
-  if (command == "OLED Test1") {
+boolean OLED_checkCommand(const char* command) {
+  if (strcmp(command, "OLED Test1") == 0) {
     OLED_drawCircle();
-  } else if (command == "OLED Test2") {
+    return true;
+  } else if (strcmp(command, "OLED Test2") == 0) {
     OLED_drawFrame();
-  } else {
-    return false;
+    return true;
   }
-  return true;
+  return false;
 }
 
 /////////////////////////////////////////////
@@ -118,19 +123,18 @@ void SoilMoisture_begin() {
 void SoilMoisture_test() {
   while (Serial.available() <= 0) {
     int soilValue = 1024 - analogRead(SoilMoisture_Pin);
-    Serial.print("SoilMoisture ");
+    Serial.print(F("SoilMoisture "));
     Serial.println(soilValue);
     delay(100);
   }
 }
 
-boolean SoilMoisture_checkCommand(String command) {
-  if (command == "SoilMoisture Test") {
+boolean SoilMoisture_checkCommand(const char* command) {
+  if (strcmp(command, "SoilMoisture Test") == 0) {
     SoilMoisture_test();
-  } else {
-    return false;
+    return true;
   }
-  return true;
+  return false;
 }
 
 /////////////////////////////////////////////
@@ -141,10 +145,10 @@ ErriezBMX280 bmx280 = ErriezBMX280(0x76);
 
 void BME280_begin() {
   if (bmx280.begin()) {
-    Serial.println("BME280 Init Ok");
+    Serial.println(F("BME280 Init Ok"));
     delay(100);
   } else {
-    Serial.println("BME280 Init Error");
+    Serial.println(F("BME280 Init Error"));
     delay(100);
   }
 }
@@ -155,68 +159,75 @@ void BME280_test() {
     float humidity = bmx280.readHumidity();
     float pressure = bmx280.readPressure() / 100.0;
     float altitude = bmx280.readAltitude(SEA_LEVEL_PRESSURE_HPA);
-    Serial.print("BME280 ");
-    Serial.print("Tem "); Serial.print(temperature); Serial.print(" ");
-    Serial.print("Hum "); Serial.print(humidity); Serial.print(" ");
-    Serial.print("Pres "); Serial.print(pressure); Serial.print(" ");
-    Serial.print("Alt "); Serial.println(altitude);
+    Serial.print(F("BME280 "));
+    Serial.print(F("Tem ")); Serial.print(temperature); Serial.print(F(" "));
+    Serial.print(F("Hum ")); Serial.print(humidity); Serial.print(F(" "));
+    Serial.print(F("Pres ")); Serial.print(pressure); Serial.print(F(" "));
+    Serial.print(F("Alt ")); Serial.println(altitude);
     delay(100);
   }
 }
 
-boolean BME280_checkCommand(String command) {
-  if (command == "BME280 Test") {
+boolean BME280_checkCommand(const char* command) {
+  if (strcmp(command, "BME280 Test") == 0) {
     BME280_test();
-  } else {
-    return false;
+    return true;
   }
-  return true;
+  return false;
 }
 
 /////////////////////////////////////////////
 // WiFi Module
 /////////////////////////////////////////////
-String ssid = "", password = "";
+char ssid[50] = "";
+char password[50] = "";
 
-void WiFi_setSSID(String newSSID) {
-  ssid = newSSID;
+void WiFi_setSSID(const char* newSSID) {
+  strncpy(ssid, newSSID, sizeof(ssid) - 1);
+  ssid[sizeof(ssid) - 1] = '\0';
 }
 
-void WiFi_setPassword(String newPassword) {
-  password = newPassword;
+void WiFi_setPassword(const char* newPassword) {
+  strncpy(password, newPassword, sizeof(password) - 1);
+  password[sizeof(password) - 1] = '\0';
 }
 
 boolean WiFi_connect() {
-  Serial.print("SSID: ");
+  Serial.print(F("SSID "));
   Serial.println(ssid);
   delay(100);
-  Serial.print("Password: ");
+  Serial.print(F("Password "));
   Serial.println(password);
   delay(100);
 
   if (LbIoT.Wifi.status() != WL_CONNECTED) {
-    if (LbIoT.Wifi.begin(ssid.c_str(), password.c_str()) < 0) {
-      Serial.println("WiFi Connection Error");
+    if (LbIoT.Wifi.begin(ssid, password) < 0) {
+      Serial.println(F("WiFi Connection Error"));
       return false; 
     } else {
-      Serial.println("WiFi Connected");
+      Serial.println(F("WiFi Connected"));
       delay(100);
     }
   }
   return true;
 }
 
-boolean WiFi_checkCommand(String command) {
-  if (command.startsWith("WiFi SSID")) {
-    WiFi_setSSID(command.substring(10));
-  } else if (command.startsWith("WiFi Password")) {
-    WiFi_setPassword(command.substring(14));
-  } else if (command == "WiFi Connect") {
+boolean WiFi_checkCommand(const char* command) {
+  if (strncmp(command, "WiFi SSID", 10) == 0) {
+    WiFi_setSSID(command + 10);
+    Serial.print(F("WiFi SSID Set to: "));
+    Serial.println(ssid);
+    return true;
+  } else if (strncmp(command, "WiFi Password", 14) == 0) {
+    WiFi_setPassword(command + 14);
+    Serial.print(F("WiFi Password Set to: "));
+    Serial.println(password);
+    return true;
+  } else if (strcmp(command, "WiFi Connect") == 0) {
     return WiFi_connect();
-  } else {
-    return false;
   }
-  return true;
+  Serial.println(F("WiFi command not recognized."));
+  return false;
 }
 
 /////////////////////////////////////////////
@@ -231,10 +242,10 @@ byte beatCnt = 0;
 
 void MAX30102_begin() {
   if (particleSensor.begin(Wire, 400000)) {
-    Serial.println("MAX30102 Init Ok");
+    Serial.println(F("MAX30102 Init Ok"));
     delay(100);
   } else {
-    Serial.println("MAX30102 Init Error");
+    Serial.println(F("MAX30102 Init Error"));
     delay(100);
   }
   particleSensor.setup();
@@ -249,10 +260,10 @@ void MAX30102_test() {
     if (checkForBeat(irValue) && (irValue >= FINGER_THRESHOLD)) {
       tone(11, 440, 50);
       beatCnt++;
-      Serial.print("MAX30102 Beat ");
+      Serial.print(F("MAX30102 Beat "));
       Serial.println(beatCnt);
     } else if (irValue < FINGER_THRESHOLD) {
-      Serial.println("MAX30102 No Finger");
+      Serial.println(F("MAX30102 No Finger"));
       sensorProcessIdle();
     }
   }
@@ -272,11 +283,10 @@ void sensorProcessIdle() {
   }
 }
 
-boolean MAX30102_checkCommand(String command) {
-  if (command == "MAX30102 Test") {
+boolean MAX30102_checkCommand(const char* command) {
+  if (strcmp(command, "MAX30102 Test") == 0) {
     MAX30102_test();
-  } else {
-    return false;
+    return true;
   }
-  return true;
+  return false;
 }

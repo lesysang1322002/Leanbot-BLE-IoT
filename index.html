@@ -102,12 +102,12 @@
         <label class="sensor-name"><strong>WiFi</strong></label>
         <textarea class="sensor-value monospace" id="ESP" readonly></textarea>
         <div>
-            <label for="ssid">SSID:</label>
+            <label for="ssid"><strong>SSID</strong></label>
             <input type="text" id="ssid" name="ssid" oninput="checkInputs()">
         </div>
         <div>
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" oninput="checkInputs()">
+            <label for="password"><strong>Password</strong></label>
+            <input type="text" id="password" name="password" oninput="checkInputs()">
         </div>
         <button class="btn btn-primary-test" id="ESP-button" onclick="connectWiFi()" disabled>Test</button>
     </div>
