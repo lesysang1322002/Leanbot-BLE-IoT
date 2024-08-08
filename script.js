@@ -45,7 +45,6 @@ function requestBluetoothDevice() {
         logstatus(dev.name + " - IoT Modules");
         checkMessageWithin5Seconds();
         document.getElementById("buttonText").innerText = "Rescan";
-        checkconnected = true;
         enableButtons();
         gattCharacteristic = characteristic
         gattCharacteristic.addEventListener('characteristicvaluechanged', handleChangedValue);   
@@ -74,7 +73,7 @@ function onDisconnected(event) {
     logstatus("SCAN to connect");
     document.getElementById("buttonText").innerText = "Scan";
     console.log(`Device ${device.name} is disconnected.`);
-    Rescan();
+    ResetVariable();
 }
 
 function send(data) {
@@ -122,14 +121,14 @@ function toggleFunction() {
     } else {
         disconnect();
         requestBluetoothDevice();
-        Rescan();
+        ResetVariable();
     }
 }
 
-function Rescan(){
-    checkconnected = false;
+function ResetVariable(){
     checkFirstValue = true;
     checkmess = false;
+    ConectedWifi = false;
     disableButtons();
     clearTimeout(timeoutCheckMessage);
     clearTextArea();
@@ -153,7 +152,6 @@ function checkMessageWithin5Seconds() {
     }, 5000);
 }
 
-let checkconnected = false;
 let checkmess = false;
 
 let string = "";
@@ -170,6 +168,7 @@ let SSIDfromWeb = "";
 let PasswordfromWeb = "";
 let SSIDfromLeanbot = "";
 let PasswordfromLeanbot = "";
+let ConectedWifi = false;
 
 let TextAreaHC_SR501 = document.getElementById("HC-SR501");
 let TextAreaOLED = document.getElementById("OLED");
@@ -206,13 +205,15 @@ function handleChangedValue(event) {
     let dataArray = new Uint8Array(data.buffer);
     let textDecoder = new TextDecoder('utf-8');
     let valueString = textDecoder.decode(dataArray);
+    // console.log("Nano > " + valueString);
     let n = valueString.length;
     if(valueString[n-1] === '\n'){
         string += valueString;
-        console.log("Nano-> " + string);
-        string = string.replace(/(\r\n|\n|\r)/gm, "");
+        console.log("NanN" + string);
         let arrString = string.split(/[ \t\r\n]+/);
-
+        if(arrString[0] != 'Connecting'){
+            string = string.replace(/(\r\n|\n|\r)/gm, "");
+        }
         if (string == stringfromLeanbot && !checkmess) {
             clearTimeout(timeoutCheckMessage);
             checkmess = true;
@@ -252,8 +253,14 @@ function handleChangedValue(event) {
                 TextAreaBME_Alt.value = arrString[8];
             }
         }
+        if(arrString[0] === 'Connecting'){
+            TextAreaESP.value = string;
+        }
         if(arrString[0] === 'WiFi'){
-            TextAreaESP.value = string.substring(5, string.length);
+            TextAreaESP.value = TextAreaESP.value + string;
+            if(arrString[1] === 'Connected'){
+                ConectedWifi = true;
+            }
         }
         if(arrString[0] === 'MAX30102'){
             TextAreaMAX30102.value = string.substring(9, string.length);
@@ -271,7 +278,9 @@ function checkInputs() {
     const button = document.getElementById('ESP-button');
 
     // Kích hoạt nút Test chỉ khi cả SSID và Password đều được nhập
+    if(gattCharacteristic){
     button.disabled = !(ssid && password);
+    }
 }
 
 function delay(ms) {
@@ -294,8 +303,8 @@ async function connectWiFi() {
     // Gửi lệnh kết nối
     send("WiFi Connect");
     await delay(100); // Chờ 100ms 
-    if(TextAreaESP.value != "Connected"){
-    TextAreaESP.value = "Connecting to " + SSIDfromWeb + "...";
+    if(!ConectedWifi){
+    TextAreaESP.value = "Connecting ...";
     }
 }
 

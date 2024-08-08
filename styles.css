@@ -105,6 +105,7 @@ p {
   border-radius: 5px;
 }
 
+
 .btn-primary-test {
   display: flex;
   align-items: center;
@@ -164,6 +165,15 @@ p {
   border-radius: 3px;
 }
 
+#ESP{
+  overflow: auto;
+  white-space: pre;
+  text-align: left;
+  height: 150px;
+  font-size: 12px;
+}
+
+
 #SoilMin, #SoilMax, #SoilRange {
   width: 50px;
 }
@@ -175,7 +185,7 @@ p {
 }
 
 input[type="text"] {
-  margin-top: 10px;
+  margin-top: 5px;
 }
 
 #ssid{
