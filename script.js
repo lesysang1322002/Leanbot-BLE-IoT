@@ -153,7 +153,7 @@ function checkMessageWithin5Seconds() {
 }
 
 let checkmess = false;
-
+let timeoutCheckMessage;
 let string = "";
 let stringfromLeanbot = "Test IoT Modules";
 let checkFirstValue = true;
@@ -223,8 +223,8 @@ function handleChangedValue(event) {
         if(arrString[0] === 'HC-SR501'){
             TextAreaHC_SR501.value = arrString[1];
         }
-        if(arrString[0] === 'OLED'){
-            TextAreaOLED.value = arrString[1];
+        if(arrString[0] === 'OLED' || arrString[0] === 'Observe'){
+            TextAreaOLED.value = string;
         }
         if(arrString[0] === 'SoilMoisture'){
             TextAreaSoilMoisture.value = arrString[1];
@@ -305,15 +305,6 @@ async function connectWiFi() {
     await delay(100); // Chờ 100ms 
     if(!ConectedWifi){
     TextAreaESP.value = "Connecting ...";
-    }
-}
-
-function changeImageOled(){
-    if(TextAreaOLED.value === "Circle"){
-        send("OLED Test2");
-    }
-    else if(TextAreaOLED.value === "Frame"){
-        send("OLED Test1");
     }
 }
 
