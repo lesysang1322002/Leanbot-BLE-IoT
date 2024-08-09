@@ -313,6 +313,11 @@ function TestSoilMoisture(){
     checkFirstValue = true;
 }
 
+function TestOLED(){
+    TextAreaOLED.value = "Observe the OLED screen";
+    send("OLED Test");
+}
+
 document.addEventListener('DOMContentLoaded', (event) => {
     buttons.forEach(button => {
         button.addEventListener('click', () => {
