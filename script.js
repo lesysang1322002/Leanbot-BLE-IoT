@@ -205,11 +205,10 @@ function handleChangedValue(event) {
     let dataArray = new Uint8Array(data.buffer);
     let textDecoder = new TextDecoder('utf-8');
     let valueString = textDecoder.decode(dataArray);
-    // console.log("Nano > " + valueString);
     let n = valueString.length;
     if(valueString[n-1] === '\n'){
         string += valueString;
-        console.log("NanN" + string);
+        console.log("Nano >" + string);
         let arrString = string.split(/[ \t\r\n]+/);
         if(arrString[0] != 'Connecting'){
             string = string.replace(/(\r\n|\n|\r)/gm, "");
