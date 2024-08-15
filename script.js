@@ -76,10 +76,26 @@ function onDisconnected(event) {
     ResetVariable();
 }
 
-function send(data) {
+async function send(data) {
     if (gattCharacteristic) {
         console.log("You -> " + data);
-        gattCharacteristic.writeValue(str2ab(data + "\n"));
+        let start = 0;
+        let dataLength = data.length;
+        while (start < dataLength) {
+            let subStr = data.substring(start, start + 16);
+            try {
+                await gattCharacteristic.writeValue(str2ab(subStr));
+            } catch (error) {
+                console.error("Error writing to characteristic:", error);
+                break;
+            }
+            start += 16;
+        }
+        try {
+            await gattCharacteristic.writeValue(str2ab('\n'));
+        } catch (error) {
+            console.error("Error writing newline to characteristic:", error);
+        }
     } else {
         console.log("GATT Characteristic not found.");
     }
@@ -293,11 +309,11 @@ async function connectWiFi() {
 
     // Gửi thông tin SSID
     send("WiFi SSID " + SSIDfromWeb);
-    await delay(100); // Chờ 100ms
+    await delay(300); // Chờ 100ms
 
     // Gửi thông tin Password
     send("WiFi Password " + PasswordfromWeb);
-    await delay(100); // Chờ 100ms
+    await delay(300); // Chờ 100ms
 
     // Gửi lệnh kết nối
     send("WiFi Connect");
