@@ -328,9 +328,9 @@ function checkInputs() {
     }
 }
 
-function delay(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
+// function delay(ms) {
+//     return new Promise(resolve => setTimeout(resolve, ms));
+// }
 
 // Hàm connectWiFi sử dụng async/await để xử lý delay
 async function connectWiFi() {
@@ -338,16 +338,15 @@ async function connectWiFi() {
     PasswordfromWeb = document.getElementById('password').value;
 
     // Gửi thông tin SSID
-    send("WiFi SSID " + SSIDfromWeb);
-    await delay(300); // Chờ 100ms
+    await send("WiFi SSID " + SSIDfromWeb);
 
     // Gửi thông tin Password
-    send("WiFi Password " + PasswordfromWeb);
-    await delay(300); // Chờ 100ms
+    await send("WiFi Password " + PasswordfromWeb);
+    // await delay(300); // Chờ 100ms
 
     // Gửi lệnh kết nối
-    send("WiFi Connect");
-    await delay(100); // Chờ 100ms 
+    await send("WiFi Connect");
+    // await delay(100); // Chờ 100ms 
     if(!ConectedWifi){
     TextAreaESP.value = "Connecting ...";
     }
