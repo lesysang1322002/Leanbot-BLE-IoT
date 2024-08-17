@@ -9,12 +9,11 @@
 // Main Setup and Loop
 /////////////////////////////////////////////
  
-String command = "";
+String command; 
  
 void setup() {
   Serial.begin(115200);
   Wire.begin();
-  Wire.setClock(400000);
  
   // Initialize modules
   HC_SR501_begin();
@@ -22,6 +21,7 @@ void setup() {
   SoilMoisture_begin();
   BME280_begin();
   MAX30102_begin();
+  Wire.setClock(100000);
 }
  
 void loop() {
@@ -34,11 +34,11 @@ void serial_checkCommand() {
   if (Serial.available() <= 0) return;
   command = Serial.readStringUntil('\n');
  
-  if (WiFi_checkCommand()) return;
   if (HC_SR501_checkCommand()) return;
   if (OLED_checkCommand()) return;
   if (SoilMoisture_checkCommand()) return;
   if (BME280_checkCommand()) return;
+  if (WiFi_checkCommand()) return;
   if (MAX30102_checkCommand()) return;
  
   Serial.println(F("Unknown command"));
@@ -78,37 +78,51 @@ void OLED_begin() {
 }
  
 boolean OLED_test() {
-  Serial.println(F("Observe the OLED screen"));
-  int x = 15;  // Initial X position
-  int y = 15;  // Initial Y position
-  int radius = 15;  // Radius of the circle
-  int xDirection = 1;  // X direction of movement
-  int yDirection = 1;  // Y direction of movement
+  byte x = 63;  
+  byte y = 31;  
+  const byte radius = 15;  
+  byte xDirection = 1;  
+  byte yDirection = 1;  
 
   while (Serial.available() <= 0) {
-    oled.firstPage(); // Start a new page
-    do {
-      oled.drawCircle(x, y, radius, U8G2_DRAW_ALL); // Draw the circle
-    } while (oled.nextPage()); // Continue to the next page
+    Serial.print("Circle at (");
+    Serial.print(x);
+    Serial.print(", ");
+    Serial.print(y);
+    Serial.println(")");
 
-    // Update circle position
+    oled.firstPage(); 
+    Serial.println("First page initialized");
+
+    do {
+      // Serial.println("Before drawCircle");
+      oled.drawCircle(x, y, radius, U8G2_DRAW_ALL);
+      // Serial.println("After drawCircle");
+    } while (oled.nextPage());
+    // Serial.println("Finished drawing");
+
     x += xDirection;
     y += yDirection;
 
-    // Check for screen boundaries and reverse direction if hitting boundaries
-    if (x - radius <= 0 || x + radius >= oled.getWidth()) {
+    Serial.print("Updated x: ");
+    Serial.print(x);
+    Serial.print(", Updated y: ");
+    Serial.println(y);
+
+    if ((x <= 0 + radius) || (x >= 127 - radius)) {
       xDirection = -xDirection;
+      Serial.println("Reversing x direction");
     }
-    if (y - radius <= 0 || y + radius >= oled.getHeight()) {
+    if ((y <= 0 + radius) || (y >= 63 - radius)) {
       yDirection = -yDirection;
+      Serial.println("Reversing y direction");
     }
 
-    delay(50); // Adjust speed of movement
+    delay(50); 
   }
-  oled.clearDisplay();
-
+  
   Serial.println(F("OLED Test Done"));
-  delay(100);
+  delay(50);
   return true;
 }
  
@@ -124,6 +138,13 @@ boolean OLED_checkCommand() {
  
 void SoilMoisture_begin() {
   pinMode(SoilMoisture_Pin, INPUT);
+  if(analogRead(SoilMoisture_Pin)){
+    Serial.println(F("SoilMoisture Init Ok"));
+    delay(100);
+  } else {
+    Serial.println(F("SoilMoisture Init Error"));
+    delay(100);
+  }
 }
  
 boolean SoilMoisture_test() {
@@ -137,7 +158,9 @@ boolean SoilMoisture_test() {
 }
  
 boolean SoilMoisture_checkCommand() {
-  if (command == F("SoilMoisture Test")) return SoilMoisture_test();
+  if (command == F("SoilMoisture Test")) {
+    return SoilMoisture_test();
+  }
   return false;
 }
  

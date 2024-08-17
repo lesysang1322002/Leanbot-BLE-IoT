@@ -188,7 +188,7 @@ let ConectedWifi = false;
 
 let TextAreaHC_SR501 = document.getElementById("HC-SR501");
 let TextAreaOLED = document.getElementById("OLED");
-let TextAreaSoilMoisture = document.getElementById("Soil Moisture");
+let TextAreaSoilMoisture = document.getElementById("SoilMoisture");
 let TextAreaBME280 = document.getElementById("BME280");
 let TextAreaESP = document.getElementById("ESP");
 let TextAreaMAX30102 = document.getElementById("MAX30102");
@@ -197,6 +197,13 @@ let TextAreaBME_Tem = document.getElementById("BME_Tem");
 let TextAreaBME_Hum = document.getElementById("BME_Hum");
 let TextAreaBME_Pres = document.getElementById("BME_Pres");
 let TextAreaBME_Alt = document.getElementById("BME_Alt");
+let TextAreaRelAlt = document.getElementById("BME_RelAlt");
+let checkFirstValueBME = true;
+let RelAltRef ;
+let countBMEValue;
+let sumAlt = 0;
+
+let buttonTestSoil = document.getElementById('Soil-Moisture-button');
 
 function clearTextArea(){
     TextAreaHC_SR501.value = "";
@@ -242,22 +249,35 @@ function handleChangedValue(event) {
             TextAreaOLED.value = string;
         }
         if(arrString[0] === 'SoilMoisture'){
-            TextAreaSoilMoisture.value = arrString[1];
-            let SoilMoistureInt = parseInt(arrString[1]);
-            if(checkFirstValue){
-                checkFirstValue = false;
-                MinSoilMoisture = SoilMoistureInt;
-                MaxSoilMoisture = SoilMoistureInt;
+            if(arrString[1] === 'Init'){
+                TextAreaSoilMoisture.value = string.substring(12, string.length);
             }
-            if(SoilMoistureInt < MinSoilMoisture){
-                MinSoilMoisture = SoilMoistureInt;
+            else{
+            if(arrString[1] === '1024'){
+                TextAreaSoilMoisture.value = "Soil Moisture Sensor not plugged in"; 
+                TextAreaSoilMin.value = "";
+                TextAreaSoilMax.value = "";
+                TextAreaSoilRange.value = "";
             }
-            if(SoilMoistureInt > MaxSoilMoisture){
-                MaxSoilMoisture = SoilMoistureInt;
+            else{
+                TextAreaSoilMoisture.value = arrString[1];
+                let SoilMoistureInt = parseInt(arrString[1]);
+                if(checkFirstValue){
+                    checkFirstValue = false;
+                    MinSoilMoisture = SoilMoistureInt;
+                    MaxSoilMoisture = SoilMoistureInt;
+                }
+                if(SoilMoistureInt < MinSoilMoisture){
+                    MinSoilMoisture = SoilMoistureInt;
+                }
+                if(SoilMoistureInt > MaxSoilMoisture){
+                    MaxSoilMoisture = SoilMoistureInt;
+                }
+                TextAreaSoilMin.value = MinSoilMoisture;
+                TextAreaSoilMax.value = MaxSoilMoisture;
+                TextAreaSoilRange.value = MaxSoilMoisture - MinSoilMoisture;
+                }
             }
-            TextAreaSoilMin.value = MinSoilMoisture;
-            TextAreaSoilMax.value = MaxSoilMoisture;
-            TextAreaSoilRange.value = MaxSoilMoisture - MinSoilMoisture;
         }
         if(arrString[0] === 'BME280'){
             TextAreaBME280.value = string.substring(6, string.length);
@@ -266,6 +286,16 @@ function handleChangedValue(event) {
                 TextAreaBME_Hum.value = arrString[4];
                 TextAreaBME_Pres.value = arrString[6];
                 TextAreaBME_Alt.value = arrString[8];
+                let ALtRawFloat = parseFloat(arrString[8]);
+                if(checkFirstValueBME){
+                    countBMEValue++;
+                    sumAlt += ALtRawFloat;
+                    if(countBMEValue === 10){
+                        RelAltRef = sumAlt/10;
+                        checkFirstValueBME = false;
+                    }
+                }
+                if(!checkFirstValueBME) TextAreaRelAlt.value = (ALtRawFloat - RelAltRef).toFixed(2);
             }
         }
         if(arrString[0] === 'Connecting'){
@@ -331,6 +361,13 @@ function TestSoilMoisture(){
 function TestOLED(){
     TextAreaOLED.value = "Observe the OLED screen";
     send("OLED Test");
+}
+
+function TestBME280(){
+    send("BME280 Test");
+    checkFirstValueBME = true;
+    countBMEValue = 0;
+    sumAlt = 0;
 }
 
 document.addEventListener('DOMContentLoaded', (event) => {

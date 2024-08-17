@@ -47,7 +47,7 @@
     </div>
     <div class="item">
         <label class="sensor-name"><strong>Soil Moisture</strong></label>
-        <textarea class="sensor-value monospace" id="Soil Moisture" readonly></textarea>
+        <textarea class="sensor-value monospace" id="SoilMoisture" readonly></textarea>
         <div class = "row">
             <div class="form-group">
                 <label for="message">Min</label>
@@ -74,28 +74,32 @@
         <label class="sensor-name"><strong>BME280</strong></label>
         <textarea class="sensor-value monospace" id="BME280" readonly></textarea>
         <div class = "row">
-        <div class = "column">
+        <div class = "col">
             <div class="form-group">
-                <label for="message">Tem</label>
+                <label for="message">Temp.</label>
                 <textarea id="BME_Tem" name="message" class = "monospace"></textarea>
             </div>
             <div class="form-group">
-                <label for="message">Pres</label>
-                <textarea id="BME_Pres" name="message" class = "monospace"></textarea>
-            </div>
-            </div>
-        <div class = "column">
-            <div class="form-group">
-                <label for="message">Hum</label>
+                <label for="message">Humid.</label>
                 <textarea id="BME_Hum" name="message" class = "monospace"></textarea>
             </div>
+        </div>
+        <div class = "col">
             <div class="form-group">
-                <label for="message">Alt</label>
+                <label for="message">Pres.</label>
+                <textarea id="BME_Pres" name="message" class = "monospace"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="message">Raw. Alt.</label>
                 <textarea id="BME_Alt" name="message" class = "monospace"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="message">Rel. Alt.</label>
+                <textarea id="BME_RelAlt" name="message" class = "monospace"></textarea>
             </div>
         </div>
         </div>
-        <button class="btn btn-primary-test" id="BME280-button" onclick="send('BME280 Test')">Test</button>
+        <button class="btn btn-primary-test" id="BME280-button" onclick="TestBME280()">Test</button>
     </div>
     <div class="item">
         <label class="sensor-name"><strong>WiFi</strong></label>

@@ -160,9 +160,17 @@ p {
   width: 90px;
   resize: none;
   text-align: center;
-  font-size: 14px;
+  font-size: 12px;
   border: 2px solid #ccc;
   border-radius: 3px;
+}
+
+#BME_Tem, #BME_Hum, #BME_Press, #BME_Alt, #BME_RelAlt{
+  width: 68px;
+}
+
+#SoilMoisture, #BME280, #MAX30102, #OLED, #HC-SR501{
+  font-size: 12px;
 }
 
 #ESP{
@@ -173,13 +181,18 @@ p {
   font-size: 12px;
 }
 
+#BME_Tem, #BME_Hum, #BME_Pres, #BME_Alt, #BME_RelAlt{
+  height: 25px;
+  font-size: 12px;
+  padding: 0;
+}
 
 #SoilMin, #SoilMax, #SoilRange {
   width: 50px;
 }
 
 .row{
-  padding-top: 10px;
+  padding-top: 5px;
   display: flex;
   justify-content: space-around;
 }
@@ -195,7 +208,7 @@ input[type="text"] {
 @media screen and (orientation: landscape) {
   .item {
       width: calc(33.33% - 20px);
-      height: 40vh;
+      height: 42vh;
   }
 }
 @media screen and (orientation: portrait) {
