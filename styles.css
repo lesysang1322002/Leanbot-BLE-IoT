@@ -165,6 +165,11 @@ p {
   border-radius: 3px;
 }
 
+.col_tem{
+  padding-left: 10px;
+  padding-right: 5px;
+}
+
 #BME_Tem, #BME_Hum, #BME_Press, #BME_Alt, #BME_RelAlt{
   width: 68px;
 }
