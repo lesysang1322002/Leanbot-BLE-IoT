@@ -143,6 +143,7 @@ function toggleFunction() {
 
 function ResetVariable(){
     checkFirstValue = true;
+    checkFirstValueBME = true;
     checkmess = false;
     ConectedWifi = false;
     disableButtons();
@@ -196,7 +197,6 @@ let TextAreaMAX30102 = document.getElementById("MAX30102");
 let TextAreaBME_Tem = document.getElementById("BME_Tem");
 let TextAreaBME_Hum = document.getElementById("BME_Hum");
 let TextAreaBME_Pres = document.getElementById("BME_Pres");
-let TextAreaBME_Alt = document.getElementById("BME_Alt");
 let TextAreaRelAlt = document.getElementById("BME_RelAlt");
 let checkFirstValueBME = true;
 let RelAltRef ;
@@ -215,7 +215,7 @@ function clearTextArea(){
     TextAreaBME_Tem.value = "";
     TextAreaBME_Hum.value = "";
     TextAreaBME_Pres.value = "";
-    TextAreaBME_Alt.value = "";
+    TextAreaRelAlt.value = "";
     TextAreaSoilMin.value = "";
     TextAreaSoilMax.value = "";
     TextAreaSoilRange.value = "";
@@ -282,10 +282,9 @@ function handleChangedValue(event) {
         if(arrString[0] === 'BME280'){
             TextAreaBME280.value = string.substring(6, string.length);
             if(arrString[1] === 'Tem'){
-                TextAreaBME_Tem.value = arrString[2];
-                TextAreaBME_Hum.value = arrString[4];
+                TextAreaBME_Tem.value = parseFloat(arrString[2]).toFixed(1);
+                TextAreaBME_Hum.value = parseFloat(arrString[4]).toFixed(1);
                 TextAreaBME_Pres.value = arrString[6];
-                TextAreaBME_Alt.value = arrString[8];
                 let ALtRawFloat = parseFloat(arrString[8]);
                 if(checkFirstValueBME){
                     countBMEValue++;
@@ -339,11 +338,10 @@ async function connectWiFi() {
 
     // Gửi thông tin SSID
     await send("WiFi SSID " + SSIDfromWeb);
-
+    // await delay(100); // Chờ 100ms
     // Gửi thông tin Password
     await send("WiFi Password " + PasswordfromWeb);
-    // await delay(300); // Chờ 100ms
-
+    // await delay(100); // Chờ 100ms
     // Gửi lệnh kết nối
     await send("WiFi Connect");
     // await delay(100); // Chờ 100ms 

@@ -1,298 +1,360 @@
-#include "LeanbotIoT.h"       // Leanbot IoT Library
-#include <U8g2lib.h>          // U8g2 Library Reference: https://github.com/olikraus/u8g2/wiki
-#include <Wire.h>             // Wire Library Reference: https://www.arduino.cc/en/Reference/Wire
-#include <ErriezBMX280.h>     // https://github.com/Erriez/ErriezBMX280
-#include "MAX30105.h"         // https://github.com/sparkfun/SparkFun_MAX3010x_Sensor_Library
-#include "heartRate.h"
- 
-/////////////////////////////////////////////
-// Main Setup and Loop
-/////////////////////////////////////////////
- 
-String command; 
+#include <Leanbot.h>
+
+const int ThresholdLine = 60;
+const int V_MIN = 350;
+const int V_MEAN = 1000;
+const int V_MAX = 2000;
+
+bool checkDemofromWeb = false;
  
 void setup() {
-  Serial.begin(115200);
-  Wire.begin();
- 
-  // Initialize modules
-  HC_SR501_begin();
-  OLED_begin();
-  SoilMoisture_begin();
-  BME280_begin();
-  MAX30102_begin();
-  Wire.setClock(100000);
+  Leanbot.begin();
+  LbIRLine.setThreshold(ThresholdLine, ThresholdLine, ThresholdLine, ThresholdLine);
 }
  
 void loop() {
-  Serial.println(F("Test IoT Modules"));
-  delay(100);
+  printAllSensors();
+  if (!checkDemofromWeb) {
+    lbTouch_check();
+  }
   serial_checkCommand();
+  LbDelay(100);
 }
- 
-void serial_checkCommand() {
+
+void serial_checkCommand(){
   if (Serial.available() <= 0) return;
-  command = Serial.readStringUntil('\n');
- 
-  if (HC_SR501_checkCommand()) return;
-  if (OLED_checkCommand()) return;
-  if (SoilMoisture_checkCommand()) return;
-  if (BME280_checkCommand()) return;
-  if (WiFi_checkCommand()) return;
-  if (MAX30102_checkCommand()) return;
- 
-  Serial.println(F("Unknown command"));
-}
- 
-/////////////////////////////////////////////
-// HC-SR501 Sensor
-/////////////////////////////////////////////
-#define HC_SR501_Pin A1
- 
-void HC_SR501_begin() {
-  pinMode(HC_SR501_Pin, INPUT);
-}
- 
-boolean HC_SR501_test() {
-  while (Serial.available() <= 0) {
-    int pirValue = digitalRead(HC_SR501_Pin);
-    Serial.print(F("HC-SR501 "));
-    Serial.println(pirValue);
-    delay(100);
+  char cmd = Serial.read();
+  switch (cmd) {
+    case 'F':  Leanbot_setSpeed(+4, +4);        break;    // Forward
+    case 'B':  Leanbot_setSpeed(-4, -4);        break;    // Backward
+    case 'L':  Leanbot_setSpeed(-4, +4);        break;    // Left
+    case 'R':  Leanbot_setSpeed(+4, -4);        break;    // Right
+    case 'G':  Leanbot_setSpeed(+2, +4);        break;    // Forward Left
+    case 'I':  Leanbot_setSpeed(+4, +2);        break;    // Forward Right
+    case 'H':  Leanbot_setSpeed(-2, -4);        break;    // Back Left
+    case 'J':  Leanbot_setSpeed(-4, -2);        break;    // Back Right
+    case 'S':  Leanbot_setSpeed( 0,  0);        break;    // Stop 
+    case 'q':  Leanbot_SetVelocity(10);         break;
+    case '0' ... '9':
+               Leanbot_SetVelocity(cmd - '0');  break;
+    case 'W':  ledOn();                         break;
+    case 'w':  ledOff();                        break;
+    case 'U':  ;                                break;    // back light on
+    case 'u':  ;                                break;    // back light off
+    case 'V':  hornOn();                        break;
+    case 'v':  hornOff();                       break;
+    case 'X':  LbGripper.close();              break;
+    case 'x':  LbGripper.open();                break;
+    default:  
+      String  command = "";
+      command += cmd;
+      while (Serial.available() > 0) {
+        char c = Serial.read();
+        if (c == '\n') {
+          handleCommandDemo(command);
+          break;
+        }
+        else command += c;
+      }
+      break;
   }
-  return true;
+}
+
+void printAllSensors() {
+  printTouch();
+  Serial.print(" - ");
+  printIR();
+  Serial.print(" - ");
+  printPing();
+  Serial.print(" - ");
+  printGripper();
+  Serial.println();
 }
  
-boolean HC_SR501_checkCommand() {
-  if (command == F("HC-SR501 Test")) return HC_SR501_test();
-  return false;
-}
- 
-/////////////////////////////////////////////
-// OLED Module
-/////////////////////////////////////////////
-U8G2_SH1106_128X64_NONAME_1_HW_I2C oled(U8G2_R0);   // SH1106 for 1.3" OLED module
- 
-void OLED_begin() {
-  oled.begin();
-}
- 
-boolean OLED_test() {
-  byte x = 63;  
-  byte y = 31;  
-  const byte radius = 15;  
-  byte xDirection = 1;  
-  byte yDirection = 1;  
-
-  while (Serial.available() <= 0) {
-    Serial.print("Circle at (");
-    Serial.print(x);
-    Serial.print(", ");
-    Serial.print(y);
-    Serial.println(")");
-
-    oled.firstPage(); 
-    Serial.println("First page initialized");
-
-    do {
-      // Serial.println("Before drawCircle");
-      oled.drawCircle(x, y, radius, U8G2_DRAW_ALL);
-      // Serial.println("After drawCircle");
-    } while (oled.nextPage());
-    // Serial.println("Finished drawing");
-
-    x += xDirection;
-    y += yDirection;
-
-    Serial.print("Updated x: ");
-    Serial.print(x);
-    Serial.print(", Updated y: ");
-    Serial.println(y);
-
-    if ((x <= 0 + radius) || (x >= 127 - radius)) {
-      xDirection = -xDirection;
-      Serial.println("Reversing x direction");
-    }
-    if ((y <= 0 + radius) || (y >= 63 - radius)) {
-      yDirection = -yDirection;
-      Serial.println("Reversing y direction");
-    }
-
-    delay(50); 
+void printTouch() {
+  const int touchPins[] = {TB1A, TB1B, TB2A, TB2B};
+  Serial.print("TB ");
+  for (int i = 0; i < 4; i++) {
+    Serial.print(LbTouch.read(touchPins[i]) == HIGH ? "1" : "0");
   }
-  
-  Serial.println(F("OLED Test Done"));
-  delay(50);
-  return true;
 }
  
-boolean OLED_checkCommand() {
-  if (command == F("OLED Test")) return OLED_test();
-  return false;
+int threshold(int value, int thresholdValue) {
+  return (value > thresholdValue) ? 1 : 0;
 }
  
-/////////////////////////////////////////////
-// Capacitive Soil Moisture Sensor
-/////////////////////////////////////////////
-#define SoilMoisture_Pin A0
+void printIR(){
+  Serial.print("IR ");                      
+  int irValues[] = {
+    threshold(LbIRSensor.read(sir6L), ThresholdLine),
+    threshold(LbIRSensor.read(sir4L), ThresholdLine),
+    threshold(LbIRSensor.read(sir5R), ThresholdLine),
+    threshold(LbIRSensor.read(sir7R), ThresholdLine)
+  };
+  Serial.print(irValues[0]);
+  Serial.print(irValues[1]);
+  Serial.print(" ");
+  LbIRLine.print(LbIRLine.read()); 
+  Serial.print(" ");           
+  Serial.print(irValues[2]);
+  Serial.print(irValues[3]);
+}
  
-void SoilMoisture_begin() {
-  pinMode(SoilMoisture_Pin, INPUT);
-  if(analogRead(SoilMoisture_Pin)){
-    Serial.println(F("SoilMoisture Init Ok"));
-    delay(100);
+void printPing(){
+  int distance = Leanbot.pingCm(); 
+  Serial.print(distance);           
+  Serial.print(" cm");
+}
+ 
+void printGripper(){
+  Serial.print("GR ");
+  int angleL = LbGripper.readL();
+  int angleR = LbGripper.readR();
+  Serial.print(angleL);
+  Serial.print(" ");
+  Serial.print(angleR);
+}
+ 
+void handleCommandDemo(String command) {
+  if (command == ".Motion") MotionDemo();
+  else if (command == ".Gripper") GripperDemo();
+  else if (command == ".Buzzer") BuzzerDemo();
+  else if (command == ".RGBLeds") RGBLedsDemo();
+  else if (command == ".LineFollow") LineFollowDemo();
+  else if (command == ".StraightMotion") StraightMotionDemo();
+  else if (command == ".Objectfollow") ObjectfollowDemo();
+  else if (command == ".IRLine") IRLineManualCalibration();
+  else if (command == ".RemoteControl") checkDemofromWeb = true;
+}
+
+void StraightMotionDemo(){
+  LbMotion.runLR( +2000, +2000 );    
+  LbMotion.waitDistanceMm( 1000 );      
+  LbDelay(100);
+  LbMotion.runLR( -2000, -2000 );       
+  LbMotion.waitDistanceMm( -980 );      
+  LbMotion.runLR(0, 0);
+  Serial.println("StraightMotion");
+  LbDelay(100);
+}
+ 
+void LineFollowDemo(){
+  int lineState;
+  do {
+    lineState = LbIRLine.read();
+    printAllSensors();
+    LbDelay(50);
+    runFollowLine();
+  } while ( LbIRLine.isBlackDetected() && lineState != 0b1111 );
+  LbMotion.runLR(0, 0);
+  LbDelay(100);
+  Serial.println("LineFollow");
+  LbDelay(100);
+}
+ 
+void ObjectfollowDemo(){
+  int d = Leanbot.pingCm();
+  int limit  = 15;
+  int offset = 1;
+  while( (d != 0) && (d < 100) ){
+    d = Leanbot.pingCm();
+    if (d > (limit + offset)) {
+      LbMotion.runLR(V_MAX, V_MAX);
+    } else if (d < (limit - offset)) {
+      LbMotion.runLR(-V_MAX, -V_MAX);
+    }
+    printAllSensors();
+    LbDelay(50);
+  }
+  LbMotion.runLR(0, 0);
+  Serial.println("Objectfollow");
+  LbDelay(100);
+}
+ 
+void MotionDemo(){
+  LbMotion.runLRrpm(30, 30);
+  LbMotion.waitDistanceMm(100);
+  LbMotion.runLRrpm(-30, -30);
+  LbMotion.waitDistanceMm(100);
+  LbMotion.runLRrpm(30, -30);
+  LbMotion.waitRotationDeg(90);
+  LbMotion.runLRrpm(-30, 30);
+  LbMotion.waitRotationDeg(90);
+  LbMotion.stopAndWait();
+  Serial.println("Motion");
+  LbDelay(100);
+}
+ 
+void GripperDemo(){
+  printAllSensors();
+  LbGripper.close();
+  printAllSensors();
+  LbDelay(1000);
+  LbGripper.open();
+  printAllSensors();
+  LbDelay(50);
+  Serial.println("Gripper");
+  LbDelay(100);
+}
+
+const int LedShape[] = {0x555555, 0xFF0000, 0xFFFF00, 0x00FF00, 0x00FFFF, 0x0000FF,0xFF00FF };
+const int timeDisplay = 1000;
+
+void RGBLedsDemo(){
+  for (int i = 0; i < 7; i++) {
+    LbRGB.fillColor(LedShape[i], CRGB(random8(), random8(), random8()));
+    LbRGB.show();
+    LbDelay(timeDisplay);
+  }
+  Serial.println("RGBLeds");
+  LbDelay(100);
+}
+
+void BuzzerDemo(){
+  const int notes[] = {261, 293, 329, 349, 392, 440, 493, 523};
+  for (int i = 0; i < 8; i++) {
+    Leanbot.tone(notes[i], 100);
+    LbDelay(100);
+  }
+  Serial.println("Buzzer");
+  LbDelay(100);
+}
+ 
+void IRLineManualCalibration(){
+  LbIRLine.doManualCalibration(TB1A);
+}
+ 
+void runFollowLine() {
+  for (int i = 0; i < 30; i++) {
+    int lineValue = LbIRLine.read();
+    LbIRLine.displayOnRGB(CRGB::DarkCyan);
+ 
+    switch (lineValue) {
+      case 0b0100:
+      case 0b1110:
+        LbMotion.runLR(0, +V_MEAN);
+        break;
+      case 0b1100:
+      case 0b1000:
+        LbMotion.runLR(-V_MEAN, +V_MEAN);
+        break;
+      case 0b0010:
+      case 0b0111:
+        LbMotion.runLR(+V_MEAN, 0);
+        break;
+      case 0b0011:
+      case 0b0001:
+        LbMotion.runLR(+V_MEAN, -V_MEAN);
+        break;
+      default:
+        LbMotion.runLR(+V_MEAN, +V_MEAN);
+    }
+ 
+    if (LbIRLine.isBlackDetected())
+      break;
+ 
+    LbMotion.waitDistanceMm(1);
+  }
+}
+
+void lbTouch_check() {
+  if (LbTouch.onPress(TB1A)) {
+    if (LbMotion.isMoving())      Leanbot_setSpeed(0, 0);
+    else {
+      delay(100);
+      if (LbTouch.onPress(TB1B))  Leanbot_setSpeed(+2, +2);
+      else                        Leanbot_setSpeed(+0, +2);
+    }
+    beepSingle();
+    delay(50);
+    return;
+  }
+ 
+  if (LbTouch.onPress(TB1B)) {
+    if (LbMotion.isMoving())      Leanbot_setSpeed(0, 0);
+    else {
+      delay(100);
+      if (LbTouch.onPress(TB1A))  Leanbot_setSpeed(+2, +2);
+      else                        Leanbot_setSpeed(+2, +0);
+    }
+    beepSingle();
+    delay(50);
+    return;
+  }
+ 
+  if (LbTouch.read(TB2A) && LbTouch.read(TB2B)) {
+    beepSingle();
+    LbGripper_Toggle();
+  }
+}
+ 
+/*******************************************************************************
+Leanbot_Beep
+*******************************************************************************/
+ 
+#define BEEP_FREQ   1500
+ 
+void hornOn() {
+  Leanbot.tone(BEEP_FREQ, 5000);      // play sound at 1500Hz for 5000ms
+}
+ 
+void hornOff() {
+  Leanbot.noTone();
+}
+ 
+void beepSingle() {
+  Leanbot.tone(BEEP_FREQ, 50);        // play sound at 1500Hz for 50ms
+}
+ 
+/*******************************************************************************
+Leanbot_RGB
+*******************************************************************************/
+ 
+void ledOn() {
+  LbRGB.fillColor(CRGB::White);       // white setting for all lights
+  LbRGB.show();                       // light status update
+}
+ 
+void ledOff() {
+  LbRGB.fillColor(CRGB::Black);       // black setting for all lights
+  LbRGB.show();                       // light status update
+}
+ 
+/*******************************************************************************
+Leanbot_Motion
+*******************************************************************************/
+ 
+int velocity  = V_MAX / 1;
+int motorLDir = 0;
+int motorRDir = 0;
+ 
+void Leanbot_run() {
+  LbMotion.runLR(velocity * motorLDir / 4, velocity * motorRDir / 4);
+}
+ 
+void Leanbot_setSpeed(int speedL, int speedR) {
+  motorLDir = speedL;
+  motorRDir = speedR;
+  Leanbot_run();
+}
+ 
+void Leanbot_SetVelocity(int speed) {
+  velocity = map(speed, 0, 10, V_MIN, V_MAX);
+  Leanbot_run();
+}
+ 
+/*******************************************************************************
+Leanbot_Gripper
+*******************************************************************************/
+ 
+void LbGripper_Toggle() {
+  static bool GripperIsClose = false;
+ 
+  if (GripperIsClose) {
+    LbGripper.open();
+    GripperIsClose = false;
   } else {
-    Serial.println(F("SoilMoisture Init Error"));
-    delay(100);
+    LbGripper.close();
+    GripperIsClose = true;
   }
-}
- 
-boolean SoilMoisture_test() {
-  while (Serial.available() <= 0) {
-    int soilValue = 1024 - analogRead(SoilMoisture_Pin);
-    Serial.print(F("SoilMoisture "));
-    Serial.println(soilValue);
-    delay(100);
-  }
-  return true;
-}
- 
-boolean SoilMoisture_checkCommand() {
-  if (command == F("SoilMoisture Test")) {
-    return SoilMoisture_test();
-  }
-  return false;
-}
- 
-/////////////////////////////////////////////
-// BME280 Sensor
-/////////////////////////////////////////////
-ErriezBMX280 bmx280 = ErriezBMX280(0x76);
-#define SEA_LEVEL_PRESSURE_HPA 1026.25
- 
-void BME280_begin() {
-  if (bmx280.begin()) {
-    Serial.println(F("BME280 Init Ok"));
-    delay(100);
-  } else {
-    Serial.println(F("BME280 Init Error"));
-    delay(100);
-  }
-}
- 
-boolean BME280_test() {
-  while (Serial.available() <= 0) {
-    float temperature = bmx280.readTemperature();
-    float humidity = bmx280.readHumidity();
-    float pressure = bmx280.readPressure() / 100.0;
-    float altitude = bmx280.readAltitude(SEA_LEVEL_PRESSURE_HPA);
-    Serial.print(F("BME280 "));
-    Serial.print(F("Tem ")); Serial.print(temperature); Serial.print(F(" "));
-    Serial.print(F("Hum ")); Serial.print(humidity); Serial.print(F(" "));
-    Serial.print(F("Pres ")); Serial.print(pressure); Serial.print(F(" "));
-    Serial.print(F("Alt ")); Serial.println(altitude);
-    delay(100);
-  }
-  return true;
-}
- 
-boolean BME280_checkCommand() {
-  if (command == F("BME280 Test")) return BME280_test();
-  return false;
-}
- 
-/////////////////////////////////////////////
-// WiFi Module
-/////////////////////////////////////////////
-String ssid = "", password = "";
- 
-boolean WiFi_setSSID(String newSSID) {
-  ssid = newSSID;
-  return true;
-}
- 
-boolean WiFi_setPassword(String newPassword) {
-  password = newPassword;
-  return true;
-}
- 
-boolean WiFi_connect() {
-  if (LbIoT.Wifi.status() != WL_CONNECTED) {
-    if (LbIoT.Wifi.begin(ssid.c_str(), password.c_str()) < 0) {
-      delay(100);
-      Serial.println(F("WiFi Connection Error"));
-      delay(100);
-    } else {
-      delay(100);
-      Serial.println(F("WiFi Connected"));
-      delay(100);
-    }
-  }
-  return true;
-}
- 
-boolean WiFi_checkCommand() {
-  if (command.startsWith(F("WiFi SSID"))) return WiFi_setSSID(command.substring(10));
-  if (command.startsWith(F("WiFi Password"))) return WiFi_setPassword(command.substring(14));
-  if (command == F("WiFi Connect")) return WiFi_connect();
-  return false;
-}
- 
-/////////////////////////////////////////////
-// MAX30102 Sensor
-/////////////////////////////////////////////
-MAX30105 particleSensor;
-#define FINGER_THRESHOLD 50000
-#define MAX30102_LED_OFF (0x00)
-#define MAX30102_LED_ON (0x1F)
- 
-byte beatCnt = 0;
- 
-void MAX30102_begin() {
-  if (particleSensor.begin(Wire, 400000)) {
-    Serial.println(F("MAX30102 Init Ok"));
-    delay(100);
-  } else {
-    Serial.println(F("MAX30102 Init Error"));
-    delay(100);
-  }
-  particleSensor.setup();
-  particleSensor.setPulseAmplitudeRed(0x0A);
-  particleSensor.setPulseAmplitudeGreen(0x00);
-}
- 
-boolean MAX30102_test() {
-  while (Serial.available() <= 0) {
-    long irValue = particleSensor.getIR();
- 
-    if (checkForBeat(irValue) && (irValue >= FINGER_THRESHOLD)) {
-      tone(11, 440, 50);
-      beatCnt++;
-      Serial.print(F("MAX30102 Beat "));
-      Serial.println(beatCnt);
-    } else if (irValue < FINGER_THRESHOLD) {
-      Serial.println(F("MAX30102 No Finger"));
-      sensorProcessIdle();
-    }
-  }
-  return true;
-}
- 
-void sensorProcessIdle() {
-  static uint8_t powerLevel = MAX30102_LED_OFF;
-  static uint32_t prevMs = 0;
-  uint32_t nowMs = millis();
- 
-  if ((nowMs - prevMs) > 500) {
-    prevMs = nowMs;
-    powerLevel = (powerLevel == MAX30102_LED_OFF) ? (MAX30102_LED_ON) : (MAX30102_LED_OFF);
-    particleSensor.setPulseAmplitudeIR(powerLevel);
-    particleSensor.clearFIFO();
-    beatCnt = 0;
-  }
-}
- 
-boolean MAX30102_checkCommand() {
-  if (command == F("MAX30102 Test")) return MAX30102_test();
-  return false;
 }
