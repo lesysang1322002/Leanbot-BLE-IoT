@@ -198,12 +198,25 @@ let TextAreaBME_Tem = document.getElementById("BME_Tem");
 let TextAreaBME_Hum = document.getElementById("BME_Hum");
 let TextAreaBME_Pres = document.getElementById("BME_Pres");
 let TextAreaRelAlt = document.getElementById("BME_RelAlt");
+
+let TextAreaUTC_Time = document.getElementById("UTC_Time");
+let TextAreaBrowser_Time = document.getElementById("Browser_Timezone");
+let TextAreaLocal_Time = document.getElementById("Local_Time");
+
 let checkFirstValueBME = true;
 let RelAltRef ;
 let countBMEValue;
 let sumAlt = 0;
 
 let buttonTestSoil = document.getElementById('Soil-Moisture-button');
+
+// Test new Date
+let UTC_Time1 = "2024-10-16T07:25:59Z"; 
+let UTC_Time2 = "2024-10-16T07:26:00Z";
+let newDate1 = new Date(UTC_Time1);
+let newDate2 = new Date(UTC_Time2);
+console.log(newDate1);
+console.log(newDate2);
 
 function clearTextArea(){
     TextAreaHC_SR501.value = "";
@@ -306,9 +319,44 @@ function handleChangedValue(event) {
             TextAreaESP.value = string;
         }
         if(arrString[0] === 'WiFi'){
+            if(arrString[1] === 'UTC'){
+            
+            TextAreaUTC_Time.value = arrString[3].replace('T', ' ').replace('Z', '');
+
+            const utcDate = new Date(arrString[3]);  // Chuyển chuỗi UTC thành đối tượng Date
+            const parts = utcDate.toString().split(' ');  // Chuyển Date thành chuỗi rồi tách thành các phần
+            const timeZonePart = parts[5].substring(3, 8);
+            TextAreaBrowser_Time.value = timeZonePart;
+                    
+              // Hiển thị múi giờ vào TextAreaBrowser_Timezone
+
+            // Tính giờ địa phương
+            const localTime = utcDate.toLocaleString('en-GB', { hour12: false });  // Lấy giờ địa phương với định dạng 'en-GB'
+            console.log(localTime);
+
+            // Tách chuỗi localTime thành ngày và giờ
+            let [datePart, timePart] = localTime.split(', ');
+            
+            // Thay dấu '/' bằng dấu '-'
+            datePart = datePart.replace(/\//g, '-');
+            
+            // Đảo ngược vị trí của ngày/tháng/năm thành năm/tháng/ngày
+            const [day, month, year] = datePart.split('-');
+            const formattedDate = `${year}-${month}-${day}`;
+            
+            // Tạo chuỗi kết quả cuối cùng
+            const formattedLocalTime = `${formattedDate} ${timePart}`;
+            
+            // Hiển thị giờ địa phương vào TextAreaLocal_Time
+            TextAreaLocal_Time.value = formattedLocalTime;  // Kết quả ví dụ: "2024-10-15 09:06:17"
+            // TextAreaLocal_Time.value = utcDate;
+            
+            }
+            else{
             TextAreaESP.value = TextAreaESP.value + string;
             if(arrString[1] === 'Connected'){
                 ConectedWifi = true;
+            }
             }
         }
         if(arrString[0] === 'MAX30102'){

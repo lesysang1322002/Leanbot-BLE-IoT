@@ -89,10 +89,6 @@
                 <label for="message">Pres.</label>
                 <textarea id="BME_Pres" name="message" class = "monospace"></textarea>
             </div>
-            <!-- <div class="form-group">
-                <label for="message">Raw. Alt. (m)</label>
-                <textarea id="BME_Alt" name="message" class = "monospace"></textarea>
-            </div> -->
             <div class="form-group">
                 <label for="message">Rel. Alt. (m)</label>
                 <textarea id="BME_RelAlt" name="message" class = "monospace"></textarea>
@@ -101,15 +97,35 @@
         </div>
         <button class="btn btn-primary-test" id="BME280-button" onclick="TestBME280()">Test</button>
     </div>
-    <div class="item">
+    <div class="item" style="margin-bottom: 0px;padding-bottom: 0px;">
+
         <label class="sensor-name"><strong>WiFi</strong></label>
         <textarea class="sensor-value monospace" id="ESP" readonly></textarea>
+        
+        <div class = "row_WiFi">
+            <div class="form-group" style = "margin: 0px">
+                <label for="utc_time">UTC Time&nbsp;&nbsp;</label>
+                <textarea id="UTC_Time" name="utc_time" class="monospace"></textarea>
+            </div>
+            <div class="form-group" style = "margin: 0px">
+                <label for="browser_timezone">Zone</label>
+                <textarea id="Browser_Timezone" name="browser_timezone" class="monospace"></textarea>
+            </div>
+        </div>
+
+        <div class = "row_WiFi">
+        <div class="form-group" style = "margin: 0px">
+            <label for="local_time">Local Time</label>
+            <textarea id="Local_Time" name="local_time" class="monospace"></textarea>
+        </div>
+        </div>
+
         <div>
-            <label for="ssid"><strong>SSID</strong></label>
+            <label for="ssid" style = "margin: 0px"><strong>SSID&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong></label>
             <input type="text" id="ssid" name="ssid" oninput="checkInputs()">
         </div>
         <div>
-            <label for="password"><strong>Password</strong></label>
+            <label for="password" style = "margin: 0px"><strong>Password&nbsp;&nbsp;</strong></label>
             <input type="text" id="password" name="password" oninput="checkInputs()">
         </div>
         <button class="btn btn-primary-test" id="ESP-button" onclick="connectWiFi()" disabled>Test</button>

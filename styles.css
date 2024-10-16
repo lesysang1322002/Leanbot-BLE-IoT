@@ -105,7 +105,6 @@ p {
   border-radius: 5px;
 }
 
-
 .btn-primary-test {
   display: flex;
   align-items: center;
@@ -170,30 +169,19 @@ p {
   padding-right: 5px;
 }
 
-#BME_Tem, #BME_Hum, #BME_Press, #BME_Alt, #BME_RelAlt{
-  width: 68px;
-}
-
 #SoilMoisture, #BME280, #MAX30102, #OLED, #HC-SR501{
   font-size: 12px;
 }
 
-#ESP{
-  overflow: auto;
-  white-space: pre;
-  text-align: left;
-  height: 150px;
-  font-size: 12px;
-}
-
 #BME_Tem, #BME_Hum, #BME_Pres, #BME_Alt, #BME_RelAlt{
+  width: 68px;
   height: 25px;
   font-size: 12px;
   padding: 0;
 }
 
 #SoilMin, #SoilMax, #SoilRange {
-  width: 50px;
+  width: 45px;
 }
 
 .row{
@@ -202,12 +190,41 @@ p {
   justify-content: space-around;
 }
 
-input[type="text"] {
-  margin-top: 5px;
+.row_WiFi{
+  display: flex;
+  align-items: left;
+  margin-top: 3px;
 }
 
-#ssid{
-  margin-left: 35px;
+#ssid, #password, #Local_Time, #Browser_Timezone, #UTC_Time{
+  height: 20px;
+  font-size: 10px;
+  padding: 0;
+  border: 2px solid #ccc;
+  border-radius: 3px;
+  text-align: left;
+}
+
+#Browser_Timezone{
+  width: 40px;
+}
+
+#Local_Time{
+  width: 120px;
+}
+
+#UTC_Time{
+  width: 120px;
+  margin-right: 10px;
+}
+
+#ESP{
+  overflow: auto;
+  white-space: pre;
+  text-align: left;
+  height: 85px !important;
+  font-size: 12px;
+  resize: none;
 }
 
 @media screen and (orientation: landscape) {
