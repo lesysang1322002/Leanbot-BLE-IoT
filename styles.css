@@ -203,19 +203,15 @@ p {
   border: 2px solid #ccc;
   border-radius: 3px;
   text-align: left;
+  margin-right: 10px;
 }
 
 #Browser_Timezone{
   width: 40px;
 }
 
-#Local_Time{
-  width: 120px;
-}
-
-#UTC_Time{
-  width: 120px;
-  margin-right: 10px;
+#Local_Time, #UTC_Time{
+  width: 120px !important;
 }
 
 #ESP{
@@ -225,6 +221,25 @@ p {
   height: 85px !important;
   font-size: 12px;
   resize: none;
+}
+
+#ESP-button{
+  height: 43px;
+  width: 78px;
+  text-align: center;
+  margin: 0px;
+  margin-bottom: 26px;
+  margin-top: 3px;
+}
+
+#wifi-box{
+  height: 30px;
+  font-size: 12px;
+  margin-top: 3px;
+  resize: none;
+  border: 2px solid #ccc;
+  border-radius: 3px;
+  padding-left: 10px;
 }
 
 @media screen and (orientation: landscape) {

@@ -51,18 +51,18 @@
         <div class = "row">
             <div class="form-group">
                 <label for="message">Min</label>
-                <textarea id="SoilMin" name="message" class = "monospace"></textarea>
+                <textarea id="SoilMin" name="message" class = "monospace"readonly></textarea>
             </div>
 
             <div class="form-group">
                 <label for="message">Max</label>
-                <textarea id="SoilMax" name="message" class = "monospace"></textarea>
+                <textarea id="SoilMax" name="message" class = "monospace"readonly></textarea>
             </div>
 
 
             <div class="form-group">
                 <label for="message">Range</label>
-                <textarea id="SoilRange" name="message" class = "monospace"></textarea>
+                <textarea id="SoilRange" name="message" class = "monospace"readonly></textarea>
             </div>
         </div>
         <button class="btn btn-primary-test" id="Soil-Moisture-button" onclick="TestSoilMoisture()">Test</button>
@@ -77,21 +77,21 @@
         <div class = "col" style = " padding-right: 5px; padding-left: 10px;">
             <div class="form-group">
                 <label for="message">Temp.</label>
-                <textarea id="BME_Tem" name="message" class = "monospace"></textarea>
+                <textarea id="BME_Tem" name="message" class = "monospace"readonly></textarea>
             </div>
             <div class="form-group">
                 <label for="message">Humid.</label>
-                <textarea id="BME_Hum" name="message" class = "monospace"></textarea>
+                <textarea id="BME_Hum" name="message" class = "monospace"readonly></textarea>
             </div>
         </div>
         <div class = "col" style = " padding-left: 5px; padding-right: 10px;" >
             <div class="form-group">
                 <label for="message">Pres.</label>
-                <textarea id="BME_Pres" name="message" class = "monospace"></textarea>
+                <textarea id="BME_Pres" name="message" class = "monospace"readonly></textarea>
             </div>
             <div class="form-group">
                 <label for="message">Rel. Alt. (m)</label>
-                <textarea id="BME_RelAlt" name="message" class = "monospace"></textarea>
+                <textarea id="BME_RelAlt" name="message" class = "monospace"readonly></textarea>
             </div>
         </div>
         </div>
@@ -101,34 +101,35 @@
 
         <label class="sensor-name"><strong>WiFi</strong></label>
         <textarea class="sensor-value monospace" id="ESP" readonly></textarea>
-        
-        <div class = "row_WiFi">
-            <div class="form-group" style = "margin: 0px">
-                <label for="utc_time">UTC Time&nbsp;&nbsp;</label>
-                <textarea id="UTC_Time" name="utc_time" class="monospace"></textarea>
-            </div>
-            <div class="form-group" style = "margin: 0px">
-                <label for="browser_timezone">Zone</label>
-                <textarea id="Browser_Timezone" name="browser_timezone" class="monospace"></textarea>
-            </div>
-        </div>
+        <textarea id="wifi-box" class="monospace" readonly></textarea>
 
         <div class = "row_WiFi">
-        <div class="form-group" style = "margin: 0px">
-            <label for="local_time">Local Time</label>
-            <textarea id="Local_Time" name="local_time" class="monospace"></textarea>
+            <div class = "column">
+                <div class="form-group" style = "margin: 0px">
+                    <label for="ssid" style = "margin: 0px; padding-right: 3px;"><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SSID</strong></label>
+                    <input type="text" id="ssid" name="ssid">
+                </div>
+                <div class="form-group" style = "margin: 0px">
+                    <label for="password" style = "margin: 0px; padding-right: 3px;"><strong >&nbsp;&nbsp;Password</strong></label>
+                    <input type="text" id="password" name="password">
+                </div>
+                <div class="form-group" style = "margin: 0px">
+                    <label for="utc_time" style = "margin: 0px;"><strong>&nbsp;&nbsp;UTC Time</strong></label>
+                    <textarea id="UTC_Time" name="utc_time" class="monospace"readonly></textarea>
+                </div>
+                <div class="form-group" style = "margin: 0px">
+                    <label for="local_time" style = "margin: 0px;"><strong>Local Time</strong></label>
+                    <textarea id="Local_Time" name="local_time" class="monospace"readonly></textarea>
+                </div>
+            </div>
+            <div class = "column">
+                <button class="btn btn-primary-test" id="ESP-button" onclick="connectWiFi()">Test</button>
+                <div class="form-group" style = "margin: 0px">
+                    <label for="browser_timezone">Zone</label>
+                    <textarea id="Browser_Timezone" name="browser_timezone" class="monospace"readonly></textarea>
+                </div>
+            </div>
         </div>
-        </div>
-
-        <div>
-            <label for="ssid" style = "margin: 0px"><strong>SSID&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong></label>
-            <input type="text" id="ssid" name="ssid" oninput="checkInputs()">
-        </div>
-        <div>
-            <label for="password" style = "margin: 0px"><strong>Password&nbsp;&nbsp;</strong></label>
-            <input type="text" id="password" name="password" oninput="checkInputs()">
-        </div>
-        <button class="btn btn-primary-test" id="ESP-button" onclick="connectWiFi()" disabled>Test</button>
     </div>
     
     <div class="item">

@@ -105,8 +105,6 @@ function enableButtons() {
     buttons.forEach(button => {
         button.disabled = false;
     });
-    const button = document.getElementById('ESP-button');
-    button.disabled = true;
 }
 
 function disableButtons() {
@@ -182,6 +180,7 @@ let TextAreaSoilRange = document.getElementById("SoilRange");
 
 
 let SSIDfromWeb = "";
+let wifiTextBox = "";
 let PasswordfromWeb = "";
 let SSIDfromLeanbot = "";
 let PasswordfromLeanbot = "";
@@ -353,10 +352,10 @@ function handleChangedValue(event) {
             
             }
             else{
-            TextAreaESP.value = TextAreaESP.value + string;
-            if(arrString[1] === 'Connected'){
-                ConectedWifi = true;
-            }
+                TextAreaESP.value = TextAreaESP.value + string;
+                if(arrString[1] === 'Connected'){
+                    ConectedWifi = true;
+                }
             }
         }
         if(arrString[0] === 'MAX30102'){
@@ -374,16 +373,16 @@ function handleChangedValue(event) {
     }
 }
 
-function checkInputs() {
-    const ssid = document.getElementById('ssid').value.trim();
-    const password = document.getElementById('password').value.trim();
-    const button = document.getElementById('ESP-button');
+// function checkInputs() {
+//     const ssid = document.getElementById('ssid').value.trim();
+//     const password = document.getElementById('password').value.trim();
+//     const button = document.getElementById('ESP-button');
 
-    // Kích hoạt nút Test chỉ khi cả SSID và Password đều được nhập
-    if(gattCharacteristic){
-    button.disabled = !(ssid && password);
-    }
-}
+//     // Kích hoạt nút Test chỉ khi cả SSID và Password đều được nhập
+//     if(gattCharacteristic){
+//     button.disabled = !(ssid && password);
+//     }
+// }
 
 // function delay(ms) {
 //     return new Promise(resolve => setTimeout(resolve, ms));
@@ -393,18 +392,25 @@ function checkInputs() {
 async function connectWiFi() {
     SSIDfromWeb = document.getElementById('ssid').value;
     PasswordfromWeb = document.getElementById('password').value;
-
-    // Gửi thông tin SSID
-    await send("WiFi SSID " + SSIDfromWeb);
-    // await delay(100); // Chờ 100ms
-    // Gửi thông tin Password
-    await send("WiFi Password " + PasswordfromWeb);
-    // await delay(100); // Chờ 100ms
-    // Gửi lệnh kết nối
-    await send("WiFi Connect");
-    // await delay(100); // Chờ 100ms 
-    if(!ConectedWifi){
-    TextAreaESP.value = "Connecting ...";
+    wifiTextBox = document.getElementById("wifi-box");
+    
+    if(SSIDfromWeb === "" || PasswordfromWeb === ""){
+        wifiTextBox.value = "Input WiFi SSID and Password to Test WiFi";
+    }
+    else{
+        wifiTextBox.value = "";
+        // Gửi thông tin SSID
+        await send("WiFi SSID " + SSIDfromWeb);
+        // await delay(100); // Chờ 100ms
+        // Gửi thông tin Password
+        await send("WiFi Password " + PasswordfromWeb);
+        // await delay(100); // Chờ 100ms
+        // Gửi lệnh kết nối
+        await send("WiFi Connect");
+        // await delay(100); // Chờ 100ms 
+        if(!ConectedWifi){
+        TextAreaESP.value = "Connecting ...";
+        }
     }
 }
 
