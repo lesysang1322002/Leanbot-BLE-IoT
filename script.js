@@ -143,7 +143,7 @@ function ResetVariable(){
     checkFirstValue = true;
     checkFirstValueBME = true;
     checkmess = false;
-    ConectedWifi = false;
+    // ConectedWifi = false;
     disableButtons();
     clearTimeout(timeoutCheckMessage);
     clearTextArea();
@@ -180,11 +180,10 @@ let TextAreaSoilRange = document.getElementById("SoilRange");
 
 
 let SSIDfromWeb = "";
-let wifiTextBox = "";
 let PasswordfromWeb = "";
 let SSIDfromLeanbot = "";
 let PasswordfromLeanbot = "";
-let ConectedWifi = false;
+// let ConectedWifi = false;
 
 let TextAreaHC_SR501 = document.getElementById("HC-SR501");
 let TextAreaOLED = document.getElementById("OLED");
@@ -209,14 +208,6 @@ let sumAlt = 0;
 
 let buttonTestSoil = document.getElementById('Soil-Moisture-button');
 
-// Test new Date
-let UTC_Time1 = "2024-10-16T07:25:59Z"; 
-let UTC_Time2 = "2024-10-16T07:26:00Z";
-let newDate1 = new Date(UTC_Time1);
-let newDate2 = new Date(UTC_Time2);
-console.log(newDate1);
-console.log(newDate2);
-
 function clearTextArea(){
     TextAreaHC_SR501.value = "";
     TextAreaOLED.value = "";
@@ -233,6 +224,9 @@ function clearTextArea(){
     TextAreaSoilRange.value = "";
     document.getElementById("ssid").value = "";
     document.getElementById("password").value = "";
+    TextAreaUTC_Time.value = "";
+    TextAreaBrowser_Time.value = "";
+    TextAreaLocal_Time.value = "";
 }
 
 function handleChangedValue(event) {
@@ -258,11 +252,16 @@ function handleChangedValue(event) {
             TextAreaHC_SR501.value = arrString[1];
         }
         if(arrString[0] === 'OLED' || arrString[0] === 'Observe'){
-            TextAreaOLED.value = string;
+            if(arrString[2] === 'Error') TextAreaOLED.value = "OLED not detected";
+            else if(arrString[1] === 'Init') TextAreaOLED.value = string.substring(5, string.length);
+            else TextAreaOLED.value = string;
         }
         if(arrString[0] === 'SoilMoisture'){
             if(arrString[1] === 'Init'){
-                TextAreaSoilMoisture.value = string.substring(12, string.length);
+                if(arrString[2] === 'Error'){
+                    TextAreaSoilMoisture.value = "Soil Moisture not detected";
+                }
+                else TextAreaSoilMoisture.value = string.substring(12, string.length);
             }
             else{
             if(arrString[1] === '1024'){
@@ -296,8 +295,9 @@ function handleChangedValue(event) {
             if(arrString[2] === 'Error'){
                 const buttonBME = document.getElementById('BME280-button');
                 buttonBME.disabled = true;
+                TextAreaBME280.value = "BME280 not detected";    
             }
-            TextAreaBME280.value = string.substring(6, string.length);
+            else TextAreaBME280.value = string.substring(6, string.length);
             if(arrString[1] === 'Tem'){
                 TextAreaBME_Tem.value = parseFloat(arrString[2]).toFixed(1);
                 TextAreaBME_Hum.value = parseFloat(arrString[4]).toFixed(1);
@@ -324,7 +324,9 @@ function handleChangedValue(event) {
 
             const utcDate = new Date(arrString[3]);  // Chuyển chuỗi UTC thành đối tượng Date
             const parts = utcDate.toString().split(' ');  // Chuyển Date thành chuỗi rồi tách thành các phần
-            const timeZonePart = parts[5].substring(3, 8);
+            if (parts[5]) {
+                timeZonePart = parts[5].substring(3, 8);
+            }
             TextAreaBrowser_Time.value = timeZonePart;
                     
               // Hiển thị múi giờ vào TextAreaBrowser_Timezone
@@ -353,17 +355,20 @@ function handleChangedValue(event) {
             }
             else{
                 TextAreaESP.value = TextAreaESP.value + string;
-                if(arrString[1] === 'Connected'){
-                    ConectedWifi = true;
-                }
+                // if(arrString[1] === 'Connected'){
+                //     ConectedWifi = true;
+                // }
             }
         }
         if(arrString[0] === 'MAX30102'){
-            TextAreaMAX30102.value = string.substring(9, string.length);
             console.log(arrString[2]);
             if(arrString[2] === 'Error'){
                 const buttonMAX30102 = document.getElementById('MAX30102-button');
                 buttonMAX30102.disabled = true;
+                TextAreaMAX30102.value = "MAX30102 not detected";
+            }
+            else{
+                TextAreaMAX30102.value = string.substring(9, string.length);
             }
         }  
         string = "";
@@ -373,32 +378,19 @@ function handleChangedValue(event) {
     }
 }
 
-// function checkInputs() {
-//     const ssid = document.getElementById('ssid').value.trim();
-//     const password = document.getElementById('password').value.trim();
-//     const button = document.getElementById('ESP-button');
-
-//     // Kích hoạt nút Test chỉ khi cả SSID và Password đều được nhập
-//     if(gattCharacteristic){
-//     button.disabled = !(ssid && password);
-//     }
-// }
-
-// function delay(ms) {
-//     return new Promise(resolve => setTimeout(resolve, ms));
-// }
-
 // Hàm connectWiFi sử dụng async/await để xử lý delay
 async function connectWiFi() {
     SSIDfromWeb = document.getElementById('ssid').value;
     PasswordfromWeb = document.getElementById('password').value;
-    wifiTextBox = document.getElementById("wifi-box");
     
     if(SSIDfromWeb === "" || PasswordfromWeb === ""){
-        wifiTextBox.value = "Input WiFi SSID and Password to Test WiFi";
+        TextAreaESP.value = "Input WiFi SSID and Password to Test WiFi";
     }
     else{
-        wifiTextBox.value = "";
+        TextAreaESP.value = "";
+        TextAreaUTC_Time.value = "";
+        TextAreaBrowser_Time.value = "";
+        TextAreaLocal_Time.value = "";
         // Gửi thông tin SSID
         await send("WiFi SSID " + SSIDfromWeb);
         // await delay(100); // Chờ 100ms
@@ -408,9 +400,7 @@ async function connectWiFi() {
         // Gửi lệnh kết nối
         await send("WiFi Connect");
         // await delay(100); // Chờ 100ms 
-        if(!ConectedWifi){
         TextAreaESP.value = "Connecting ...";
-        }
     }
 }
 
