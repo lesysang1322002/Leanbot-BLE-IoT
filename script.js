@@ -256,36 +256,40 @@ function handleChangedValue(event) {
             else TextAreaOLED.value = string;
         }
         if(arrString[0] === 'SoilMoisture'){
-            if(arrString[1] === 'Init'){
-                if(arrString[2] === 'Error'){
-                    TextAreaSoilMoisture.value = "Soil Moisture not detected";
-                }
-                else TextAreaSoilMoisture.value = string.substring(12, string.length);
-            }
-            else{
+            // if(arrString[1] === 'Init'){
+            //     if(arrString[2] === 'Error'){
+            //         TextAreaSoilMoisture.value = "Soil Moisture not detected";
+            //     }
+            //     else TextAreaSoilMoisture.value = string.substring(12, string.length);
+            // }
+            // else{
             if(arrString[1] === '1024'){
-                TextAreaSoilMoisture.value = "Soil Moisture Sensor not plugged in"; 
+                if(checkFirstValue) TextAreaSoilMoisture.value = "Soil Moisture not detected"; 
+                else TextAreaSoilMoisture.value = "Soil Moisture Sensor not plugged in"; 
                 TextAreaSoilMin.value = "";
                 TextAreaSoilMax.value = "";
                 TextAreaSoilRange.value = "";
+                checkFirstValue = true;
             }
             else{
-                TextAreaSoilMoisture.value = arrString[1];
                 let SoilMoistureInt = parseInt(arrString[1]);
                 if(checkFirstValue){
+                    TextAreaSoilMoisture.value = "Init Ok";
                     checkFirstValue = false;
                     MinSoilMoisture = SoilMoistureInt;
                     MaxSoilMoisture = SoilMoistureInt;
+                }
+                else {
+                    TextAreaSoilMoisture.value = arrString[1];
+                    TextAreaSoilMin.value = MinSoilMoisture;
+                    TextAreaSoilMax.value = MaxSoilMoisture;
+                    TextAreaSoilRange.value = MaxSoilMoisture - MinSoilMoisture;
                 }
                 if(SoilMoistureInt < MinSoilMoisture){
                     MinSoilMoisture = SoilMoistureInt;
                 }
                 if(SoilMoistureInt > MaxSoilMoisture){
                     MaxSoilMoisture = SoilMoistureInt;
-                }
-                TextAreaSoilMin.value = MinSoilMoisture;
-                TextAreaSoilMax.value = MaxSoilMoisture;
-                TextAreaSoilRange.value = MaxSoilMoisture - MinSoilMoisture;
                 }
             }
         }
