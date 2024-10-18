@@ -269,7 +269,7 @@ function handleChangedValue(event) {
                 TextAreaSoilMin.value = "";
                 TextAreaSoilMax.value = "";
                 TextAreaSoilRange.value = "";
-                checkFirstValue = true;
+                checkFirstValue = false;
             }
             else{
                 let SoilMoistureInt = parseInt(arrString[1]);
