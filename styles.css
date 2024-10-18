@@ -137,6 +137,7 @@ p {
   display: flex;
   flex-direction: column;
 }
+
 .item.active {
   background-color: lightblue;
 }
@@ -161,6 +162,7 @@ p {
   font-size: 12px;
   border: 2px solid #ccc;
   border-radius: 3px;
+  padding: 0 3px;
 }
 
 .col_tem{
@@ -196,17 +198,33 @@ p {
   border-radius: 3px;
   text-align: left;
   margin-right: 10px;
+  padding: 0 3px;
+
 }
 
 #BME_Tem, #BME_Hum, #BME_Pres, #BME_RelAlt{
   height: 20px;
+  width: 70px;
   font-size: 10px;
-  padding: 0;
   border: 2px solid #ccc;
   border-radius: 3px;
   text-align: right;
   margin-right: 10px;
-  width: 68px !important;
+  resize: none;
+  padding: 0 3px;
+}
+
+.bme{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bme label{
+  text-align: right;
+  font-weight: bold;
+  padding-right: 3px;
+  margin-bottom: 0px;
 }
 
 #Browser_Timezone{
@@ -231,7 +249,7 @@ p {
   width: 78px;
   text-align: center;
   margin: 0px;
-  margin-bottom: 41px;
+  margin-bottom: 34px;
   margin-top: 3px;
 }
 
@@ -239,13 +257,19 @@ p {
   margin-top: 10px;
 }
 
-#squareHCSR501{
+#squareHCSR501, #squareFinger, #beat{
   width: 100px;
   height: auto;
   margin: 5px auto;
   margin-top: 10px;
   border-radius: 5px;
   border: 2px solid #ccc;
+  height: 35px;
+  resize: none;
+}
+
+#beat{
+  text-align: center;
 }
 
 #progressSoil{

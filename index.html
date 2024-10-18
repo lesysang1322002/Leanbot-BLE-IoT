@@ -38,10 +38,8 @@
         <div class = "item">
             <label class="sensor-name"><strong>HC-SR501</strong></label>
             <textarea class="sensor-value monospace" id="HC-SR501" readonly></textarea>
-            <div class = "row">
-                <div class = "btn" id = "squareHCSR501"></div>
-                <button class = "btn btn-primary-test" id = "HC-SR501-button" onclick="send('HC-SR501 Test')">Test</button>
-            </div>
+            <div class = "btn" id = "squareHCSR501"></div>
+            <button class = "btn btn-primary-test" id = "HC-SR501-button" onclick="send('HC-SR501 Test')">Test</button>
         </div>
         <div class="item">
             <label class="sensor-name"><strong>OLED</strong></label>
@@ -77,19 +75,19 @@
             <label class="sensor-name"><strong>BME280</strong></label>
             <textarea class="sensor-value monospace" id="BME280" readonly></textarea>
             <div class = "col" style = "margin-top: 10px; padding-top: 0px">
-                <div class="form-group"  style = "margin: 0px">
+                <div class="bme"  style = "margin: 0px">
                     <label for="Tem">Temperature</label>
                     <textarea id="BME_Tem" name="Tem" class = "monospace"readonly></textarea>
                 </div>
-                <div class="form-group"  style = "margin: 0px">
+                <div class="bme"  style = "margin: 0px">
                     <label for="Hum">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Humidity</label>
                     <textarea id="BME_Hum" name="Hum" class = "monospace"readonly></textarea>
                 </div>
-                <div class="form-group"  style = "margin: 0px">
+                <div class="bme"  style = "margin: 0px">
                     <label for="Pres">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Pressure</label>
                     <textarea id="BME_Pres" name="Pres" class = "monospace"readonly></textarea>
                 </div>
-                <div class="form-group"  style = "margin: 0px; margin-bottom: 0px;">
+                <div class="bme"  style = "margin: 0px; margin-bottom: 0px;">
                     <label for="RelAlt">&nbsp;Rel. Altitude</label>
                     <textarea id="BME_RelAlt" name="RelAlt" class = "monospace" readonly></textarea>
                 </div>
@@ -133,6 +131,14 @@
         <div class="item">
             <label class="sensor-name"><strong>MAX30102</strong></label>
             <textarea class="sensor-value monospace" id = "MAX30102" readonly></textarea>
+            <div class = "bme" style = "margin: 0px">
+                <label for = "Finger">Finger</label>
+                <div style = "margin: 0px; margin-top: 10px; margin-bottom: 5px " class = "btn" name = "Finger" id = "squareFinger"></div>
+            </div>
+            <div class = "bme" style = "margin: 0px">
+                <label for="beat">&nbsp;&nbsp;&nbsp;Beat</label>
+                <textarea style = "margin: 0px; margin-top: 5px" name = "beat" class="monospace" id = "beat" readonly></textarea>
+            </div>
             <button class="btn btn-primary-test" id = "MAX30102-button" onclick="send('MAX30102 Test')">Test</button>
         </div>
     </div>

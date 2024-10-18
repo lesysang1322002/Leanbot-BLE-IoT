@@ -362,13 +362,21 @@ function handleChangedValue(event) {
             }
         }
         if(arrString[0] === 'MAX30102'){
-            console.log(arrString[2]);
+            // console.log(arrString[2]);
             if(arrString[2] === 'Error'){
                 const buttonMAX30102 = document.getElementById('MAX30102-button');
                 buttonMAX30102.disabled = true;
                 TextAreaMAX30102.value = "MAX30102 not detected";
             }
+            else if(arrString[2] === 'Ok'){
+                TextAreaMAX30102.value = string.substring(9, string.length);
+            }
             else{
+                if(arrString[1] === 'No') squareFinger.style.backgroundColor = "white";
+                else {
+                    squareFinger.style.backgroundColor = "red";
+                    document.getElementById('beat').value = arrString[2];
+                }
                 TextAreaMAX30102.value = string.substring(9, string.length);
             }
         }  
