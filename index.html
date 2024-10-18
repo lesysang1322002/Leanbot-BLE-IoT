@@ -48,23 +48,23 @@
         <div class="item">
             <label class="sensor-name"><strong>Soil Moisture</strong></label>
             <textarea class="sensor-value monospace" id="SoilMoisture" readonly></textarea>
-            <div class = "row">
-                <div class="form-group">
+            <div class = "row" style = "margin-top: 15px;padding-top: 0px">
+                <div class="form-group" style = "margin-bottom: 15px" >
                     <label for="message">Min</label>
                     <textarea id="SoilMin" name="message" class = "monospace"readonly></textarea>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group" style = "margin-bottom: 15px" >
                     <label for="message">Max</label>
                     <textarea id="SoilMax" name="message" class = "monospace"readonly></textarea>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group" style = "margin-bottom: 15px" >
                     <label for="message">Range</label>
                     <textarea id="SoilRange" name="message" class = "monospace"readonly></textarea>
                 </div>
             </div>
-            <button class="btn btn-primary-test" id="Soil-Moisture-button" onclick="TestSoilMoisture()">Test</button>
+            <button style = "margin-top: 0px" class="btn btn-primary-test" id="Soil-Moisture-button" onclick="TestSoilMoisture()">Test</button>
         </div>
     </div>
 
@@ -72,27 +72,27 @@
         <div class = "item">
             <label class="sensor-name"><strong>BME280</strong></label>
             <textarea class="sensor-value monospace" id="BME280" readonly></textarea>
-            <div class = "row">
-            <div class = "col" style = " padding-right: 5px; padding-left: 10px;">
-                <div class="form-group">
-                    <label for="message">Temp.</label>
-                    <textarea id="BME_Tem" name="message" class = "monospace"readonly></textarea>
+            <div class = "row" style = "margin-top: 15px; padding-top: 0px">
+                <div class = "col" style = " padding-right: 5px; padding-left: 10px;">
+                    <div class="form-group">
+                        <label for="message">Temp.</label>
+                        <textarea id="BME_Tem" name="message" class = "monospace"readonly></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Humid.</label>
+                        <textarea id="BME_Hum" name="message" class = "monospace"readonly></textarea>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="message">Humid.</label>
-                    <textarea id="BME_Hum" name="message" class = "monospace"readonly></textarea>
+                <div class = "col" style = " padding-left: 5px; padding-right: 10px;" >
+                    <div class="form-group">
+                        <label for="message">Pres.</label>
+                        <textarea id="BME_Pres" name="message" class = "monospace"readonly></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Rel. Alt. (m)</label>
+                        <textarea id="BME_RelAlt" name="message" class = "monospace"readonly></textarea>
+                    </div>
                 </div>
-            </div>
-            <div class = "col" style = " padding-left: 5px; padding-right: 10px;" >
-                <div class="form-group">
-                    <label for="message">Pres.</label>
-                    <textarea id="BME_Pres" name="message" class = "monospace"readonly></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="message">Rel. Alt. (m)</label>
-                    <textarea id="BME_RelAlt" name="message" class = "monospace"readonly></textarea>
-                </div>
-            </div>
             </div>
             <button class="btn btn-primary-test" id="BME280-button" onclick="TestBME280()">Test</button>
         </div>

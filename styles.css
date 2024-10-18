@@ -229,6 +229,10 @@ p {
   margin-top: 3px;
 }
 
+#HC-SR501-button, #OLED-button, #MAX30102-button{
+  margin-top: 15px;
+}
+
 #wifi-box{
   height: 30px;
   font-size: 12px;
