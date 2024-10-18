@@ -12,11 +12,11 @@ buttons.forEach(button => {
 function isWebBluetoothEnabled() {
     if (!navigator.bluetooth) {
     console.log('Web Bluetooth API is not available in this browser!');
-    // log('Web Bluetooth API is not available in this browser!');
     return false
     }
     return true
 }
+
 function requestBluetoothDevice() {
     if(isWebBluetoothEnabled()){
     logstatus('Finding...');
@@ -143,7 +143,6 @@ function ResetVariable(){
     checkFirstValue = true;
     checkFirstValueBME = true;
     checkmess = false;
-    // ConectedWifi = false;
     disableButtons();
     clearTimeout(timeoutCheckMessage);
     clearTextArea();
@@ -154,16 +153,16 @@ function ResetVariable(){
 
 function checkMessageWithin5Seconds() {
     // Thiết lập hàm setTimeout để kết thúc sau 5 giây
-        timeoutCheckMessage = setTimeout(function() {
-        console.log("5 seconds timeout, message incorrect.");
-        let infoBox = document.getElementById("infopopup");
-        // Hiển thị info box
-        infoBox.style.display = "block";
-        document.addEventListener("click", function(event) {
-            if (!infoBox.contains(event.target)) {
-                infoBox.style.display = "none";
-            }
-        });
+    timeoutCheckMessage = setTimeout(function() {
+    console.log("5 seconds timeout, message incorrect.");
+    let infoBox = document.getElementById("infopopup");
+    // Hiển thị info box
+    infoBox.style.display = "block";
+    document.addEventListener("click", function(event) {
+        if (!infoBox.contains(event.target)) {
+            infoBox.style.display = "none";
+        }
+    });
     }, 5000);
 }
 
@@ -183,7 +182,6 @@ let SSIDfromWeb = "";
 let PasswordfromWeb = "";
 let SSIDfromLeanbot = "";
 let PasswordfromLeanbot = "";
-// let ConectedWifi = false;
 
 let TextAreaHC_SR501 = document.getElementById("HC-SR501");
 let TextAreaOLED = document.getElementById("OLED");
@@ -235,6 +233,7 @@ function handleChangedValue(event) {
     let textDecoder = new TextDecoder('utf-8');
     let valueString = textDecoder.decode(dataArray);
     let n = valueString.length;
+
     if(valueString[n-1] === '\n'){
         string += valueString;
         console.log("Nano >" + string);
@@ -319,45 +318,39 @@ function handleChangedValue(event) {
         }
         if(arrString[0] === 'WiFi'){
             if(arrString[1] === 'UTC'){
-            
             TextAreaUTC_Time.value = arrString[3].replace('T', ' ').replace('Z', '');
-
             const utcDate = new Date(arrString[3]);  // Chuyển chuỗi UTC thành đối tượng Date
             const parts = utcDate.toString().split(' ');  // Chuyển Date thành chuỗi rồi tách thành các phần
+
             if (parts[5]) {
                 timeZonePart = parts[5].substring(3, 8);
             }
+             // Hiển thị múi giờ vào TextAreaBrowser_Timezone
             TextAreaBrowser_Time.value = timeZonePart;
-                    
-              // Hiển thị múi giờ vào TextAreaBrowser_Timezone
 
             // Tính giờ địa phương
             const localTime = utcDate.toLocaleString('en-GB', { hour12: false });  // Lấy giờ địa phương với định dạng 'en-GB'
             console.log(localTime);
 
-            // Tách chuỗi localTime thành ngày và giờ
-            let [datePart, timePart] = localTime.split(', ');
-            
-            // Thay dấu '/' bằng dấu '-'
-            datePart = datePart.replace(/\//g, '-');
-            
-            // Đảo ngược vị trí của ngày/tháng/năm thành năm/tháng/ngày
-            const [day, month, year] = datePart.split('-');
-            const formattedDate = `${year}-${month}-${day}`;
-            
-            // Tạo chuỗi kết quả cuối cùng
-            const formattedLocalTime = `${formattedDate} ${timePart}`;
-            
-            // Hiển thị giờ địa phương vào TextAreaLocal_Time
-            TextAreaLocal_Time.value = formattedLocalTime;  // Kết quả ví dụ: "2024-10-15 09:06:17"
-            // TextAreaLocal_Time.value = utcDate;
-            
+                // Tách chuỗi localTime thành ngày và giờ
+                let [datePart, timePart] = localTime.split(', ');
+                
+                // Thay dấu '/' bằng dấu '-'
+                datePart = datePart.replace(/\//g, '-');
+                
+                // Đảo ngược vị trí của ngày/tháng/năm thành năm/tháng/ngày
+                const [day, month, year] = datePart.split('-');
+                const formattedDate = `${year}-${month}-${day}`;
+                
+                // Tạo chuỗi kết quả cuối cùng
+                const formattedLocalTime = `${formattedDate} ${timePart}`;
+                
+                // Hiển thị giờ địa phương vào TextAreaLocal_Time
+                TextAreaLocal_Time.value = formattedLocalTime;  // Kết quả ví dụ: "2024-10-15 09:06:17"
+                // TextAreaLocal_Time.value = utcDate;
             }
             else{
                 TextAreaESP.value = TextAreaESP.value + string;
-                // if(arrString[1] === 'Connected'){
-                //     ConectedWifi = true;
-                // }
             }
         }
         if(arrString[0] === 'MAX30102'){
@@ -393,13 +386,10 @@ async function connectWiFi() {
         TextAreaLocal_Time.value = "";
         // Gửi thông tin SSID
         await send("WiFi SSID " + SSIDfromWeb);
-        // await delay(100); // Chờ 100ms
         // Gửi thông tin Password
         await send("WiFi Password " + PasswordfromWeb);
-        // await delay(100); // Chờ 100ms
         // Gửi lệnh kết nối
         await send("WiFi Connect");
-        // await delay(100); // Chờ 100ms 
         TextAreaESP.value = "Connecting ...";
     }
 }
@@ -428,7 +418,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
             document.querySelectorAll('.item').forEach(item => {
                 item.classList.remove('active');
             });
-
             // Thêm lớp 'active' vào mục chứa nút được nhấn
             button.closest('.item').classList.add('active');
         });

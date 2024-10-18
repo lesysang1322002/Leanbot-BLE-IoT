@@ -104,7 +104,6 @@ p {
   white-space: nowrap;
   border-radius: 5px;
 }
-
 .btn-primary-test {
   display: flex;
   align-items: center;
@@ -137,11 +136,9 @@ p {
   display: flex;
   flex-direction: column;
 }
-
 .item.active {
   background-color: lightblue;
 }
-
 .form-group {
   display: flex;
   align-items: center;
@@ -228,7 +225,7 @@ p {
   width: 78px;
   text-align: center;
   margin: 0px;
-  margin-bottom: 26px;
+  margin-bottom: 41px;
   margin-top: 3px;
 }
 
