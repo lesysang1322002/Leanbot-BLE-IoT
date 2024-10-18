@@ -103,8 +103,9 @@ p {
   text-align: center;
   white-space: nowrap;
   border-radius: 5px;
+  height: 85px;
 }
-.btn-primary-test {
+.btn-primary-test{
   display: flex;
   align-items: center;
   justify-content: center; /* Căn giữa nội dung trong nút */
@@ -143,6 +144,7 @@ p {
   display: flex;
   align-items: center;
   justify-content: center;
+  margin: 0px;
 }
 .form-group label {
   text-align: right;
@@ -170,12 +172,12 @@ p {
   font-size: 12px;
 }
 
-#BME_Tem, #BME_Hum, #BME_Pres, #BME_Alt, #BME_RelAlt{
+/* #BME_Tem, #BME_Hum, #BME_Pres, #BME_Alt, #BME_RelAlt{
   width: 68px;
   height: 25px;
   font-size: 12px;
   padding: 0;
-}
+} */
 
 #SoilMin, #SoilMax, #SoilRange {
   width: 45px;
@@ -201,6 +203,17 @@ p {
   border-radius: 3px;
   text-align: left;
   margin-right: 10px;
+}
+
+#BME_Tem, #BME_Hum, #BME_Pres, #BME_Alt, #BME_RelAlt{
+  height: 20px;
+  font-size: 10px;
+  padding: 0;
+  border: 2px solid #ccc;
+  border-radius: 3px;
+  text-align: right;
+  margin-right: 10px;
+  width: 68px !important;
 }
 
 #Browser_Timezone{
@@ -230,7 +243,22 @@ p {
 }
 
 #HC-SR501-button, #OLED-button, #MAX30102-button{
-  margin-top: 15px;
+  margin-top: 10px;
+}
+
+#squareHCSR501{
+  width: 100px;
+  height: auto;
+  margin: 5px auto;
+  margin-top: 10px;
+  border-radius: 5px;
+  border: 2px solid #ccc;
+}
+
+#progressSoil{
+  width: 100%;
+  height: 20px;
+  margin-top: 5px;
 }
 
 #wifi-box{

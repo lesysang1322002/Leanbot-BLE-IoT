@@ -204,6 +204,7 @@ let RelAltRef ;
 let countBMEValue;
 let sumAlt = 0;
 
+let square = document.getElementById('squareHCSR501');
 let buttonTestSoil = document.getElementById('Soil-Moisture-button');
 
 function clearTextArea(){
@@ -249,6 +250,8 @@ function handleChangedValue(event) {
 
         if(arrString[0] === 'HC-SR501'){
             TextAreaHC_SR501.value = arrString[1];
+            if(arrString[1] === '1') square.style.backgroundColor = "red";
+            else square.style.backgroundColor = "white";
         }
         if(arrString[0] === 'OLED' || arrString[0] === 'Observe'){
             if(arrString[2] === 'Error') TextAreaOLED.value = "OLED not detected";
@@ -281,6 +284,7 @@ function handleChangedValue(event) {
                 }
                 else {
                     TextAreaSoilMoisture.value = arrString[1];
+                    document.getElementById('progressSoil').value = arrString[1];
                     TextAreaSoilMin.value = MinSoilMoisture;
                     TextAreaSoilMax.value = MaxSoilMoisture;
                     TextAreaSoilRange.value = MaxSoilMoisture - MinSoilMoisture;
@@ -302,9 +306,9 @@ function handleChangedValue(event) {
             }
             else TextAreaBME280.value = string.substring(6, string.length);
             if(arrString[1] === 'Tem'){
-                TextAreaBME_Tem.value = parseFloat(arrString[2]).toFixed(1);
-                TextAreaBME_Hum.value = parseFloat(arrString[4]).toFixed(1);
-                TextAreaBME_Pres.value = arrString[6];
+                TextAreaBME_Tem.value = parseFloat(arrString[2]).toFixed(1).toString() + " °C";
+                TextAreaBME_Hum.value = parseFloat(arrString[4]).toFixed(1).toString() + " %";
+                TextAreaBME_Pres.value = arrString[6].toString()                     + " hPa";
                 let ALtRawFloat = parseFloat(arrString[8]);
                 if(checkFirstValueBME){
                     countBMEValue++;
@@ -314,7 +318,7 @@ function handleChangedValue(event) {
                         checkFirstValueBME = false;
                     }
                 }
-                if(!checkFirstValueBME) TextAreaRelAlt.value = (ALtRawFloat - RelAltRef).toFixed(2);
+                if(!checkFirstValueBME) TextAreaRelAlt.value = (ALtRawFloat - RelAltRef).toFixed(2).toString() + " m";
             }
         }
         if(arrString[0] === 'Connecting'){
@@ -327,10 +331,10 @@ function handleChangedValue(event) {
             const parts = utcDate.toString().split(' ');  // Chuyển Date thành chuỗi rồi tách thành các phần
 
             if (parts[5]) {
-                timeZonePart = parts[5].substring(3, 8);
+                const timeZone = parts[5].substring(3, 8);
+                TextAreaBrowser_Time.value = timeZone;
             }
              // Hiển thị múi giờ vào TextAreaBrowser_Timezone
-            TextAreaBrowser_Time.value = timeZonePart;
 
             // Tính giờ địa phương
             const localTime = utcDate.toLocaleString('en-GB', { hour12: false });  // Lấy giờ địa phương với định dạng 'en-GB'
