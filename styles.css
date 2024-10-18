@@ -172,13 +172,6 @@ p {
   font-size: 12px;
 }
 
-/* #BME_Tem, #BME_Hum, #BME_Pres, #BME_Alt, #BME_RelAlt{
-  width: 68px;
-  height: 25px;
-  font-size: 12px;
-  padding: 0;
-} */
-
 #SoilMin, #SoilMax, #SoilRange {
   width: 45px;
 }
