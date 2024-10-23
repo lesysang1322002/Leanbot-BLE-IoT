@@ -115,6 +115,7 @@ p {
   border-color: #000000 !important;
   width: 100px;
   height: auto;
+  margin-top: auto !important;
 }
 #change-image {
   width: 160px;
@@ -136,6 +137,7 @@ p {
   border-radius: 5px;
   display: flex;
   flex-direction: column;
+  padding-bottom: 0px;
 }
 
 .item.active {
