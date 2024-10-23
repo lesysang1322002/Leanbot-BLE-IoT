@@ -206,6 +206,7 @@ let sumAlt = 0;
 
 let square = document.getElementById('squareHCSR501');
 let buttonTestSoil = document.getElementById('Soil-Moisture-button');
+let lines = [];
 
 function clearTextArea(){
     TextAreaHC_SR501.value = "";
@@ -233,157 +234,175 @@ function handleChangedValue(event) {
     let dataArray = new Uint8Array(data.buffer);
     let textDecoder = new TextDecoder('utf-8');
     let valueString = textDecoder.decode(dataArray);
-    let n = valueString.length;
 
-    if(valueString[n-1] === '\n'){
-        string += valueString;
+    string += valueString;
+
+    if(valueString.endsWith('\n')){
         console.log("Nano >" + string);
-        let arrString = string.split(/[ \t\r\n]+/);
-        if(arrString[0] != 'Connecting'){
-            string = string.replace(/(\r\n|\n|\r)/gm, "");
-        }
-        if (string == stringfromLeanbot && !checkmess) {
-            clearTimeout(timeoutCheckMessage);
-            checkmess = true;
-            console.log("Correct message.");
-        }
-
-        if(arrString[0] === 'HC-SR501'){
-            TextAreaHC_SR501.value = arrString[1];
-            if(arrString[1] === '1') square.style.backgroundColor = "red";
-            else square.style.backgroundColor = "white";
-        }
-        if(arrString[0] === 'OLED' || arrString[0] === 'Observe'){
-            if(arrString[2] === 'Error') TextAreaOLED.value = "OLED not detected";
-            else if(arrString[1] === 'Init') TextAreaOLED.value = string.substring(5, string.length);
-            else TextAreaOLED.value = string;
-        }
-        if(arrString[0] === 'SoilMoisture'){
-            // if(arrString[1] === 'Init'){
-            //     if(arrString[2] === 'Error'){
-            //         TextAreaSoilMoisture.value = "Soil Moisture not detected";
-            //     }
-            //     else TextAreaSoilMoisture.value = string.substring(12, string.length);
-            // }
-            // else{
-            if(arrString[1] === '1024'){
-                if(checkFirstValue) TextAreaSoilMoisture.value = "Soil Moisture not detected"; 
-                else TextAreaSoilMoisture.value = "Soil Moisture Sensor not plugged in"; 
-                TextAreaSoilMin.value = "";
-                TextAreaSoilMax.value = "";
-                TextAreaSoilRange.value = "";
-                checkFirstValue = false;
+        lines = string.split(/[\r\n]+/);
+        lines.forEach(line => {
+            if(line) {
+                handleSerialLine(line);  // Handle each line individually
+                console.log("line: " + line);
             }
-            else{
-                let SoilMoistureInt = parseInt(arrString[1]);
-                if(checkFirstValue){
-                    TextAreaSoilMoisture.value = "Init Ok";
-                    checkFirstValue = false;
-                    MinSoilMoisture = SoilMoistureInt;
-                    MaxSoilMoisture = SoilMoistureInt;
-                }
-                else {
-                    TextAreaSoilMoisture.value = arrString[1];
-                    document.getElementById('progressSoil').value = arrString[1];
-                    TextAreaSoilMin.value = MinSoilMoisture;
-                    TextAreaSoilMax.value = MaxSoilMoisture;
-                    TextAreaSoilRange.value = MaxSoilMoisture - MinSoilMoisture;
-                }
-                if(SoilMoistureInt < MinSoilMoisture){
-                    MinSoilMoisture = SoilMoistureInt;
-                }
-                if(SoilMoistureInt > MaxSoilMoisture){
-                    MaxSoilMoisture = SoilMoistureInt;
-                }
-            }
-        }
-        if(arrString[0] === 'BME280'){
-            console.log(arrString[2]);
-            if(arrString[2] === 'Error'){
-                const buttonBME = document.getElementById('BME280-button');
-                buttonBME.disabled = true;
-                TextAreaBME280.value = "BME280 not detected";    
-            }
-            else TextAreaBME280.value = string.substring(6, string.length);
-            if(arrString[1] === 'Tem'){
-                TextAreaBME_Tem.value = parseFloat(arrString[2]).toFixed(1).toString() + " °C";
-                TextAreaBME_Hum.value = parseFloat(arrString[4]).toFixed(1).toString() + " %";
-                TextAreaBME_Pres.value = arrString[6].toString()                     + " hPa";
-                let ALtRawFloat = parseFloat(arrString[8]);
-                if(checkFirstValueBME){
-                    countBMEValue++;
-                    sumAlt += ALtRawFloat;
-                    if(countBMEValue === 10){
-                        RelAltRef = sumAlt/10;
-                        checkFirstValueBME = false;
-                    }
-                }
-                if(!checkFirstValueBME) TextAreaRelAlt.value = (ALtRawFloat - RelAltRef).toFixed(2).toString() + " m";
-            }
-        }
-        if(arrString[0] === 'Connecting'){
-            TextAreaESP.value = string;
-        }
-        if(arrString[0] === 'WiFi'){
-            if(arrString[1] === 'UTC'){
-            TextAreaUTC_Time.value = arrString[3].replace('T', ' ').replace('Z', '');
-            const utcDate = new Date(arrString[3]);  // Chuyển chuỗi UTC thành đối tượng Date
-            const parts = utcDate.toString().split(' ');  // Chuyển Date thành chuỗi rồi tách thành các phần
-
-            if (parts[5]) {
-                const timeZone = parts[5].substring(3, 8);
-                TextAreaBrowser_Time.value = timeZone;
-            }
-             // Hiển thị múi giờ vào TextAreaBrowser_Timezone
-
-            // Tính giờ địa phương
-            const localTime = utcDate.toLocaleString('en-GB', { hour12: false });  // Lấy giờ địa phương với định dạng 'en-GB'
-            console.log(localTime);
-
-                // Tách chuỗi localTime thành ngày và giờ
-                let [datePart, timePart] = localTime.split(', ');
-                
-                // Thay dấu '/' bằng dấu '-'
-                datePart = datePart.replace(/\//g, '-');
-                
-                // Đảo ngược vị trí của ngày/tháng/năm thành năm/tháng/ngày
-                const [day, month, year] = datePart.split('-');
-                const formattedDate = `${year}-${month}-${day}`;
-                
-                // Tạo chuỗi kết quả cuối cùng
-                const formattedLocalTime = `${formattedDate} ${timePart}`;
-                
-                // Hiển thị giờ địa phương vào TextAreaLocal_Time
-                TextAreaLocal_Time.value = formattedLocalTime;  // Kết quả ví dụ: "2024-10-15 09:06:17"
-                // TextAreaLocal_Time.value = utcDate;
-            }
-            else{
-                TextAreaESP.value = TextAreaESP.value + string;
-            }
-        }
-        if(arrString[0] === 'MAX30102'){
-            // console.log(arrString[2]);
-            if(arrString[2] === 'Error'){
-                const buttonMAX30102 = document.getElementById('MAX30102-button');
-                buttonMAX30102.disabled = true;
-                TextAreaMAX30102.value = "MAX30102 not detected";
-            }
-            else if(arrString[2] === 'Ok'){
-                TextAreaMAX30102.value = string.substring(9, string.length);
-            }
-            else{
-                if(arrString[1] === 'No') squareFinger.style.backgroundColor = "white";
-                else {
-                    squareFinger.style.backgroundColor = "red";
-                    document.getElementById('beat').value = arrString[2];
-                }
-                TextAreaMAX30102.value = string.substring(9, string.length);
-            }
-        }  
+        });
         string = "";
     }
+}
+
+function handleSerialLine(line) {
+    let arrString = line.split(/[ \t]+/);
+
+    if (!checkmess) checkCodefromLeanbot(line);
+
+    switch(arrString[0]) {
+        case 'HC-SR501':
+            handleHCSR501(line);
+            break;
+        case 'OLED':
+            handleOLED(line);
+            break;
+        case 'SoilMoisture':
+            handleSoilMoisture(line);
+            break;
+        case 'BME280':
+            handleBME280(line);
+            break;
+        case 'WiFi':
+            handleWiFi(line);
+            break;
+        case 'MAX30102':
+            handleMAX30102(line);
+            break;
+        default:
+            console.log("Unknown message type");
+            break;
+    }
+}
+
+function checkCodefromLeanbot(line) {
+    if (line === stringfromLeanbot) {
+        clearTimeout(timeoutCheckMessage);
+        checkmess = true;
+        console.log("Correct message.");
+    }
+}
+
+function handleHCSR501(line) {
+    let arrLine = line.split(/[ \t]+/);
+    TextAreaHC_SR501.value = arrLine[1];
+    if (arrLine[1] === '1') square.style.backgroundColor = "red";
+    else square.style.backgroundColor = "white";
+}
+
+function handleOLED(line) {
+    let arrLine = line.split(/[ \t]+/);
+    if (arrLine[2] === 'Error') TextAreaOLED.value = "OLED not detected";
+    else TextAreaOLED.value = line.substring(5, line.length);
+}
+
+function handleSoilMoisture(line) {
+    let arrLine = line.split(/[ \t]+/);
+    let moistureValue = parseInt(arrLine[1]);
+
+    if (moistureValue === 1024) {
+        let msg = checkFirstValue ? "Soil Moisture not detected" : "Soil Moisture Sensor not plugged in";
+        TextAreaSoilMoisture.value = msg;
+        TextAreaSoilMin.value = "";
+        TextAreaSoilMax.value = "";
+        TextAreaSoilRange.value = "";
+        checkFirstValue = false;
+    } else {
+        if (checkFirstValue) {
+            TextAreaSoilMoisture.value = "Init Ok";
+            MinSoilMoisture = moistureValue;
+            MaxSoilMoisture = moistureValue;
+            checkFirstValue = false;
+        } else {
+            TextAreaSoilMoisture.value = moistureValue;
+            document.getElementById('progressSoil').value = moistureValue;
+            MinSoilMoisture = Math.min(MinSoilMoisture, moistureValue);
+            MaxSoilMoisture = Math.max(MaxSoilMoisture, moistureValue);
+            TextAreaSoilMin.value = MinSoilMoisture;
+            TextAreaSoilMax.value = MaxSoilMoisture;
+            TextAreaSoilRange.value = MaxSoilMoisture - MinSoilMoisture;
+        }
+    }
+}
+
+function handleBME280(line) {
+    let arrLine = line.split(/[ \t]+/);
+    if(arrLine[2] === 'Error'){
+        const buttonBME = document.getElementById('BME280-button');
+        buttonBME.disabled = true;
+        TextAreaBME280.value = "BME280 not detected";    
+    }
+    else TextAreaBME280.value = line.substring(6, line.length);
+    if(arrLine[1] === 'Tem'){
+        TextAreaBME_Tem.value = parseFloat(arrLine[2]).toFixed(1).toString() + " °C";
+        TextAreaBME_Hum.value = parseFloat(arrLine[4]).toFixed(1).toString() + " %";
+        TextAreaBME_Pres.value = arrLine[6].toString()                       + " hPa";
+        let ALtRawFloat = parseFloat(arrLine[8]);
+        if(checkFirstValueBME){
+            countBMEValue++;
+            sumAlt += ALtRawFloat;
+            if(countBMEValue === 10){
+                RelAltRef = sumAlt/10;
+                checkFirstValueBME = false;
+            }
+        }
+        if(!checkFirstValueBME) TextAreaRelAlt.value = (ALtRawFloat - RelAltRef).toFixed(2).toString() + " m";
+    }
+}
+
+function handleWiFi(line) {
+    let arrLine = line.split(/[ \t]+/);
+    if(arrLine[1] === 'UTC'){
+        TextAreaUTC_Time.value = arrLine[3].replace('T', ' ').replace('Z', '');
+        const utcDate = new Date(arrLine[3]);  // Chuyển chuỗi UTC thành đối tượng Date
+        const parts = utcDate.toString().split(' ');  // Chuyển Date thành chuỗi rồi tách thành các phần
+        // Hiển thị múi giờ vào TextAreaBrowser_Timezone
+        if (parts[5]) {
+            const timeZone = parts[5].substring(3, 8);
+            TextAreaBrowser_Time.value = timeZone;
+        }
+        // Tính giờ địa phương
+        const localTime = utcDate.toLocaleString('en-GB', { hour12: false });  // Lấy giờ địa phương với định dạng 'en-GB'
+        // Tách chuỗi localTime thành ngày và giờ
+        let [datePart, timePart] = localTime.split(', ');
+        // Thay dấu '/' bằng dấu '-'
+        datePart = datePart.replace(/\//g, '-');
+        // Đảo ngược vị trí của ngày/tháng/năm thành năm/tháng/ngày
+        const [day, month, year] = datePart.split('-');
+        const formattedDate = `${year}-${month}-${day}`;
+        // Tạo chuỗi kết quả cuối cùng
+        const formattedLocalTime = `${formattedDate} ${timePart}`;
+        // Hiển thị giờ địa phương vào TextAreaLocal_Time
+        TextAreaLocal_Time.value = formattedLocalTime;  // Kết quả ví dụ: "2024-10-15 09:06:17"
+        // TextAreaLocal_Time.value = utcDate;
+    }
     else{
-        string += valueString;     
+        TextAreaESP.value = lines[0] + "\n" + lines[1] + "\n" + lines[2];
+    }
+}
+
+function handleMAX30102(line) {
+    let arrLine = line.split(/[ \t]+/);
+    if(arrLine[2] === 'Error'){
+        const buttonMAX30102 = document.getElementById('MAX30102-button');
+        buttonMAX30102.disabled = true;
+        TextAreaMAX30102.value = "MAX30102 not detected";
+    }
+    else if(arrLine[2] === 'Ok'){
+        TextAreaMAX30102.value = line.substring(9, line.length);
+    }
+    else{
+        if(arrLine[1] === 'No') squareFinger.style.backgroundColor = "white";
+        else {
+            squareFinger.style.backgroundColor = "red";
+            document.getElementById('beat').value = arrLine[2];
+        }
+        TextAreaMAX30102.value = line.substring(9, line.length);
     }
 }
 
