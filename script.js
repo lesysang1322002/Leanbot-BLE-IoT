@@ -253,26 +253,27 @@ function handleChangedValue(event) {
 function handleSerialLine(line) {
     let arrString = line.split(/[ \t]+/);
 
-    if (!checkmess) checkCodefromLeanbot(line);
-
     switch(arrString[0]) {
+        case 'Test':
+            checkCodefromLeanbot(arrString);
+            break;
         case 'HC-SR501':
-            handleHCSR501(line);
+            handleHCSR501(arrString);
             break;
         case 'OLED':
-            handleOLED(line);
+            handleOLED(arrString);
             break;
         case 'SoilMoisture':
-            handleSoilMoisture(line);
+            handleSoilMoisture(arrString);
             break;
         case 'BME280':
-            handleBME280(line);
+            handleBME280(arrString);
             break;
         case 'WiFi':
-            handleWiFi(line);
+            handleWiFi(arrString);
             break;
         case 'MAX30102':
-            handleMAX30102(line);
+            handleMAX30102(arrString);
             break;
         default:
             console.log("Unknown message type");
@@ -280,30 +281,27 @@ function handleSerialLine(line) {
     }
 }
 
-function checkCodefromLeanbot(line) {
-    if (line === stringfromLeanbot) {
+function checkCodefromLeanbot(arrString) {
+    if (arrString[1] === 'IoT' && arrString[2] === 'Modules') {
         clearTimeout(timeoutCheckMessage);
         checkmess = true;
         console.log("Correct message.");
     }
 }
 
-function handleHCSR501(line) {
-    let arrLine = line.split(/[ \t]+/);
-    TextAreaHC_SR501.value = arrLine[1];
-    if (arrLine[1] === '1') square.style.backgroundColor = "red";
+function handleHCSR501(arrString) {
+    TextAreaHC_SR501.value = arrString[1];
+    if (arrString[1] === '1') square.style.backgroundColor = "red";
     else square.style.backgroundColor = "white";
 }
 
-function handleOLED(line) {
-    let arrLine = line.split(/[ \t]+/);
-    if (arrLine[2] === 'Error') TextAreaOLED.value = "OLED not detected";
-    else TextAreaOLED.value = line.substring(5, line.length);
+function handleOLED(arrString) {
+    if (arrString[2] === 'Error') TextAreaOLED.value = "OLED not detected";
+    else TextAreaOLED.value = arrString[1] + " " + arrString[2];
 }
 
-function handleSoilMoisture(line) {
-    let arrLine = line.split(/[ \t]+/);
-    let moistureValue = parseInt(arrLine[1]);
+function handleSoilMoisture(arrString) {
+    let moistureValue = parseInt(arrString[1]);
 
     if (moistureValue === 1024) {
         let msg = checkFirstValue ? "Soil Moisture not detected" : "Soil Moisture Sensor not plugged in";
@@ -330,19 +328,18 @@ function handleSoilMoisture(line) {
     }
 }
 
-function handleBME280(line) {
-    let arrLine = line.split(/[ \t]+/);
-    if(arrLine[2] === 'Error'){
+function handleBME280(arrString) {
+    if(arrString[2] === 'Error'){
         const buttonBME = document.getElementById('BME280-button');
         buttonBME.disabled = true;
         TextAreaBME280.value = "BME280 not detected";    
     }
-    else TextAreaBME280.value = line.substring(6, line.length);
-    if(arrLine[1] === 'Tem'){
-        TextAreaBME_Tem.value = parseFloat(arrLine[2]).toFixed(1).toString() + " °C";
-        TextAreaBME_Hum.value = parseFloat(arrLine[4]).toFixed(1).toString() + " %";
-        TextAreaBME_Pres.value = arrLine[6].toString()                       + " hPa";
-        let ALtRawFloat = parseFloat(arrLine[8]);
+    else TextAreaBME280.value = arrString.slice(1, 9).join(' ');
+    if(arrString[1] === 'Tem'){
+        TextAreaBME_Tem.value = parseFloat(arrString[2]).toFixed(1).toString() + " °C";
+        TextAreaBME_Hum.value = parseFloat(arrString[4]).toFixed(1).toString() + " %";
+        TextAreaBME_Pres.value = arrString[6].toString()                       + " hPa";
+        let ALtRawFloat = parseFloat(arrString[8]);
         if(checkFirstValueBME){
             countBMEValue++;
             sumAlt += ALtRawFloat;
@@ -355,11 +352,10 @@ function handleBME280(line) {
     }
 }
 
-function handleWiFi(line) {
-    let arrLine = line.split(/[ \t]+/);
-    if(arrLine[1] === 'UTC'){
-        TextAreaUTC_Time.value = arrLine[3].replace('T', ' ').replace('Z', '');
-        const utcDate = new Date(arrLine[3]);  // Chuyển chuỗi UTC thành đối tượng Date
+function handleWiFi(arrString) {
+    if(arrString[1] === 'UTC'){
+        TextAreaUTC_Time.value = arrString[3].replace('T', ' ').replace('Z', '');
+        const utcDate = new Date(arrString[3]);  // Chuyển chuỗi UTC thành đối tượng Date
         const parts = utcDate.toString().split(' ');  // Chuyển Date thành chuỗi rồi tách thành các phần
         // Hiển thị múi giờ vào TextAreaBrowser_Timezone
         if (parts[5]) {
@@ -386,23 +382,22 @@ function handleWiFi(line) {
     }
 }
 
-function handleMAX30102(line) {
-    let arrLine = line.split(/[ \t]+/);
-    if(arrLine[2] === 'Error'){
+function handleMAX30102(arrString) {
+    if(arrString[2] === 'Error'){
         const buttonMAX30102 = document.getElementById('MAX30102-button');
         buttonMAX30102.disabled = true;
         TextAreaMAX30102.value = "MAX30102 not detected";
     }
-    else if(arrLine[2] === 'Ok'){
-        TextAreaMAX30102.value = line.substring(9, line.length);
+    else if(arrString[2] === 'Ok'){
+        TextAreaMAX30102.value = arrString[1] + " " + arrString[2];
     }
     else{
-        if(arrLine[1] === 'No') squareFinger.style.backgroundColor = "white";
+        if(arrString[1] === 'No') squareFinger.style.backgroundColor = "white";
         else {
             squareFinger.style.backgroundColor = "red";
-            document.getElementById('beat').value = arrLine[2];
+            document.getElementById('beat').value = arrString[2];
         }
-        TextAreaMAX30102.value = line.substring(9, line.length);
+        TextAreaMAX30102.value = arrString[1] + " " + arrString[2];
     }
 }
 
