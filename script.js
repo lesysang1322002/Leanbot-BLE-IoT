@@ -4,7 +4,7 @@ var gattCharacteristic;
 var bluetoothDeviceDetected;
 
 function isWebBluetoothEnabled() {
-    if (!navigator.bluetooth) {
+    if (! navigator.bluetooth) {
     console.log('Web Bluetooth API is not available in this browser!');
     return false;
     }
