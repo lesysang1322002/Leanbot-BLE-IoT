@@ -363,7 +363,8 @@ function WiFi_handle(arrString) {
     }
     else{
         const msgWiFi = string.split(/[\r\n]+/);
-        TextAreaESP.value = msgWiFi[0] + "\n" + msgWiFi[1] + "\n" + msgWiFi[2];
+        if (msgWiFi[2].startsWith("WiFi")) TextAreaESP.value = msgWiFi[0] + "\n" + msgWiFi[1] + "\n" + msgWiFi[2];
+        else TextAreaESP.value = msgWiFi[0] + "\n" + msgWiFi[1];
     }
 }
 
