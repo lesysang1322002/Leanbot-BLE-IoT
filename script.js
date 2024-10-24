@@ -12,7 +12,7 @@ function isWebBluetoothEnabled() {
 }
 
 function requestBluetoothDevice() {
-    if(isWebBluetoothEnabled()){
+    if (isWebBluetoothEnabled()){
     logstatus('Finding...');
     navigator.bluetooth.requestDevice({
     filters: [{
