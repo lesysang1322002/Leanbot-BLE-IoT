@@ -39,12 +39,12 @@
             <label class="sensor-name"><strong>HC-SR501</strong></label>
             <textarea class="sensor-value monospace" id="HC-SR501" readonly></textarea>
             <div class = "btn" id = "squareHCSR501"></div>
-            <button class = "btn btn-primary-test" id = "HC-SR501-button" onclick="send('HC-SR501 Test')">Test</button>
+            <button class = "btn btn-primary-test" id = "HC-SR501-button" onclick = "HCSR501_button()">Test</button>
         </div>
         <div class="item">
             <label class="sensor-name"><strong>OLED</strong></label>
             <textarea class="sensor-value monospace" id="OLED" readonly></textarea>
-            <button class="btn btn-primary-test" id="OLED-button" onclick="TestOLED()">Test</button>
+            <button class="btn btn-primary-test" id="OLED-button" onclick = "OLED_button()">Test</button>
         </div>
         <div class="item">
             <label class="sensor-name"><strong>Soil Moisture</strong></label>
@@ -66,7 +66,7 @@
                     <textarea id="SoilRange" name="message" class = "monospace"readonly></textarea>
                 </div>
             </div>
-            <button style = "margin-top: 0px" class="btn btn-primary-test" id="Soil-Moisture-button" onclick="TestSoilMoisture()">Test</button>
+            <button style = "margin-top: 0px" class="btn btn-primary-test" id="Soil-Moisture-button" onclick = "SoilMoisture_button()" >Test</button>
         </div>
     </div>
 
@@ -92,7 +92,7 @@
                     <textarea id="BME_RelAlt" name="RelAlt" class = "monospace" readonly></textarea>
                 </div>
             </div>
-            <button class="btn btn-primary-test" id="BME280-button" onclick="TestBME280()">Test</button>
+            <button class="btn btn-primary-test" id="BME280-button" onclick="BME280_button()">Test</button>
         </div>
         <div class="item" style="margin-bottom: 0px;padding-bottom: 0px;">
 
@@ -119,7 +119,7 @@
                     </div>
                 </div>
                 <div class = "column" style = "margin-top: 3px">
-                    <button class="btn btn-primary-test" id="ESP-button" onclick="connectWiFi()">Test</button>
+                    <button class="btn btn-primary-test" id="ESP-button" onclick="WiFi_button()">Test</button>
                     <div class="form-group" style = "margin: 0px">
                         <label for="browser_timezone">Zone</label>
                         <textarea id="Browser_Timezone" name="browser_timezone" class="monospace"readonly></textarea>
@@ -139,7 +139,7 @@
                 <label for="beat">&nbsp;&nbsp;&nbsp;Beat</label>
                 <textarea style = "margin: 0px; margin-top: 5px" name = "beat" class="monospace" id = "beat" readonly></textarea>
             </div>
-            <button class="btn btn-primary-test" id = "MAX30102-button" onclick="send('MAX30102 Test')">Test</button>
+            <button class="btn btn-primary-test" id = "MAX30102-button" onclick = "MAX30102_button()">Test</button>
         </div>
     </div>
     

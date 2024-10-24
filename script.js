@@ -3,18 +3,12 @@ var bleCharacteristic = '0000ffe1-0000-1000-8000-00805f9b34fb';
 var gattCharacteristic;
 var bluetoothDeviceDetected;
 
-let buttons = document.querySelectorAll('.btn-primary-test');
-
-buttons.forEach(button => {
-    button.disabled = true;
-});
-
 function isWebBluetoothEnabled() {
     if (!navigator.bluetooth) {
     console.log('Web Bluetooth API is not available in this browser!');
-    return false
+    return false;
     }
-    return true
+    return true;
 }
 
 function requestBluetoothDevice() {
@@ -46,7 +40,7 @@ function requestBluetoothDevice() {
         checkMessageWithin5Seconds();
         document.getElementById("buttonText").innerText = "Rescan";
         enableButtons();
-        gattCharacteristic = characteristic
+        gattCharacteristic = characteristic;
         gattCharacteristic.addEventListener('characteristicvaluechanged', handleChangedValue);   
         return gattCharacteristic.startNotifications();
 })
@@ -61,8 +55,7 @@ function requestBluetoothDevice() {
     });
 }}
 
-function disconnect()
-{
+function disconnect(){
     logstatus("SCAN to connect");
     console.log("Disconnected from: " + dev.name);
     return dev.gatt.disconnect();
@@ -101,6 +94,20 @@ async function send(data) {
     }
 }
 
+function str2ab(str){
+    var buf = new ArrayBuffer(str.length);
+    var bufView = new Uint8Array(buf);
+    for (var i = 0, l = str.length; i < l; i++) {
+        bufView[i] = str.charCodeAt(i);
+    }
+    return buf;
+}
+
+let buttons = document.querySelectorAll('.btn-primary-test');
+buttons.forEach(button => {
+    button.disabled = true;
+});
+
 function enableButtons() {
     buttons.forEach(button => {
         button.disabled = false;
@@ -113,22 +120,12 @@ function disableButtons() {
     });
 }
 
-function str2ab(str){
-    var buf = new ArrayBuffer(str.length);
-    var bufView = new Uint8Array(buf);
-    for (var i = 0, l = str.length; i < l; i++) {
-        bufView[i] = str.charCodeAt(i);
-    }
-    return buf;
-}
-
 function  logstatus(text){
     const navbarTitle = document.getElementById('navbarTitle');
     navbarTitle.textContent = text;
 }
 
 const button = document.getElementById("toggleButton");
-
 function toggleFunction() {
     if (button.innerText == "Scan") {
         requestBluetoothDevice();
@@ -140,8 +137,8 @@ function toggleFunction() {
 }
 
 function ResetVariable(){
-    checkFirstValue = true;
-    checkFirstValueBME = true;
+    isFirstSoilMoistureRead = true;
+    isFirstBMERead = true;
     checkmess = false;
     disableButtons();
     clearTimeout(timeoutCheckMessage);
@@ -166,69 +163,24 @@ function checkMessageWithin5Seconds() {
     }, 5000);
 }
 
-let checkmess = false;
-let timeoutCheckMessage;
-let string = "";
-let stringfromLeanbot = "Test IoT Modules";
-let checkFirstValue = true;
-let MinSoilMoisture;
-let MaxSoilMoisture;
-let TextAreaSoilMin = document.getElementById("SoilMin");
-let TextAreaSoilMax = document.getElementById("SoilMax");
-let TextAreaSoilRange = document.getElementById("SoilRange");
+function clearTextArea() {
+    let textAreas = [
+        'TextAreaHC_SR501', 'TextAreaOLED', 'TextAreaSoilMoisture', 'TextAreaBME280', 'TextAreaESP', 
+        'TextAreaMAX30102', 'TextAreaBME_Tem', 'TextAreaBME_Hum', 'TextAreaBME_Pres', 'TextAreaRelAlt', 
+        'TextAreaSoilMin', 'TextAreaSoilMax', 'TextAreaSoilRange', 'TextAreaBeat', 
+        'TextAreaPasswordfromWeb', 'TextAreaSSIDfromWeb', 'TextAreaUTC_Time', 
+        'TextAreaBrowser_Time', 'TextAreaLocal_Time'
+    ];
 
-
-let SSIDfromWeb = "";
-let PasswordfromWeb = "";
-let SSIDfromLeanbot = "";
-let PasswordfromLeanbot = "";
-
-let TextAreaHC_SR501 = document.getElementById("HC-SR501");
-let TextAreaOLED = document.getElementById("OLED");
-let TextAreaSoilMoisture = document.getElementById("SoilMoisture");
-let TextAreaBME280 = document.getElementById("BME280");
-let TextAreaESP = document.getElementById("ESP");
-let TextAreaMAX30102 = document.getElementById("MAX30102");
-
-let TextAreaBME_Tem = document.getElementById("BME_Tem");
-let TextAreaBME_Hum = document.getElementById("BME_Hum");
-let TextAreaBME_Pres = document.getElementById("BME_Pres");
-let TextAreaRelAlt = document.getElementById("BME_RelAlt");
-
-let TextAreaUTC_Time = document.getElementById("UTC_Time");
-let TextAreaBrowser_Time = document.getElementById("Browser_Timezone");
-let TextAreaLocal_Time = document.getElementById("Local_Time");
-
-let checkFirstValueBME = true;
-let RelAltRef ;
-let countBMEValue;
-let sumAlt = 0;
-
-let square = document.getElementById('squareHCSR501');
-let buttonTestSoil = document.getElementById('Soil-Moisture-button');
-let lines = [];
-
-function clearTextArea(){
-    TextAreaHC_SR501.value = "";
-    TextAreaOLED.value = "";
-    TextAreaSoilMoisture.value = "";
-    TextAreaBME280.value = "";
-    TextAreaESP.value = "";
-    TextAreaMAX30102.value = "";
-    TextAreaBME_Tem.value = "";
-    TextAreaBME_Hum.value = "";
-    TextAreaBME_Pres.value = "";
-    TextAreaRelAlt.value = "";
-    TextAreaSoilMin.value = "";
-    TextAreaSoilMax.value = "";
-    TextAreaSoilRange.value = "";
-    document.getElementById("ssid").value = "";
-    document.getElementById("password").value = "";
-    TextAreaUTC_Time.value = "";
-    TextAreaBrowser_Time.value = "";
-    TextAreaLocal_Time.value = "";
+    // Reset value for each TextArea
+    textAreas.forEach(id => {
+        if (document.getElementById(id)) {
+            document.getElementById(id).value = "";
+        }
+    });
 }
 
+let string = "";
 function handleChangedValue(event) {
     let data = event.target.value;
     let dataArray = new Uint8Array(data.buffer);
@@ -236,86 +188,96 @@ function handleChangedValue(event) {
     let valueString = textDecoder.decode(dataArray);
 
     string += valueString;
-
-    if(valueString.endsWith('\n')){
-        console.log("Nano >" + string);
-        lines = string.split(/[\r\n]+/);
-        lines.forEach(line => {
-            if(line) {
-                handleSerialLine(line);  // Handle each line individually
-                console.log("line: " + line);
-            }
-        });
-        string = "";
-    }
+    if ( ! valueString.endsWith( '\n' )) return;
+   
+    console.log("Nano > " + string);
+    string.split(/[\r\n]+/).forEach(line => {
+        handleSerialLine(line);       // Handle each line individually
+    });
+    string = "";
 }
 
 function handleSerialLine(line) {
+    if (! line) return;
+    console.log("line: " + line);
+
+    checkCodefromLeanbot(line);
+
     let arrString = line.split(/[ \t]+/);
-
     switch(arrString[0]) {
-        case 'Test':
-            checkCodefromLeanbot(arrString);
-            break;
-        case 'HC-SR501':
-            handleHCSR501(arrString);
-            break;
-        case 'OLED':
-            handleOLED(arrString);
-            break;
-        case 'SoilMoisture':
-            handleSoilMoisture(arrString);
-            break;
-        case 'BME280':
-            handleBME280(arrString);
-            break;
-        case 'WiFi':
-            handleWiFi(arrString);
-            break;
-        case 'MAX30102':
-            handleMAX30102(arrString);
-            break;
-        default:
-            console.log("Unknown message type");
-            break;
+        case 'HC-SR501'      : return HCSR501_handle(arrString);
+        case 'OLED'          : return OLED_handle(arrString);
+        case 'SoilMoisture'  : return SoilMoisture_handle(arrString);
+        case 'BME280'        : return BME280_handle(arrString);
+        case 'WiFi'          : return WiFi_handle(arrString);
+        case 'MAX30102'      : return MAX30102_handle(arrString);
+        default              : console.log("Unknown message type");
     }
 }
 
-function checkCodefromLeanbot(arrString) {
-    if (arrString[1] === 'IoT' && arrString[2] === 'Modules') {
-        clearTimeout(timeoutCheckMessage);
-        checkmess = true;
-        console.log("Correct message.");
-    }
-}
+let msgFromLeanbot = "Test IoT Modules";
+let checkmess = false;
+let timeoutCheckMessage;
 
-function handleHCSR501(arrString) {
+function checkCodefromLeanbot(line){ {
+    if (line !== msgFromLeanbot || checkmess) return;
+    clearTimeout(timeoutCheckMessage);
+    checkmess = true;
+    console.log("Correct message.");
+} } 
+
+//********HC-SR501********//
+let TextAreaHC_SR501 = document.getElementById("HC-SR501");
+let square = document.getElementById('squareHCSR501');
+
+function HCSR501_handle(arrString) {
     TextAreaHC_SR501.value = arrString[1];
     if (arrString[1] === '1') square.style.backgroundColor = "red";
     else square.style.backgroundColor = "white";
 }
 
-function handleOLED(arrString) {
+function HCSR501_button(){
+    send("HC-SR501 Test");
+}
+
+//********OLED********//
+let TextAreaOLED = document.getElementById("OLED");
+
+function OLED_handle(arrString) {
     if (arrString[2] === 'Error') TextAreaOLED.value = "OLED not detected";
     else TextAreaOLED.value = arrString[1] + " " + arrString[2];
 }
 
-function handleSoilMoisture(arrString) {
+function OLED_button(){
+    send("OLED Test");
+    TextAreaOLED.value = "Observe the OLED screen";
+}
+
+//********SoilMoisture********//
+let TextAreaSoilMoisture = document.getElementById("SoilMoisture");
+let TextAreaSoilMin = document.getElementById("SoilMin");
+let TextAreaSoilMax = document.getElementById("SoilMax");
+let TextAreaSoilRange = document.getElementById("SoilRange");
+let isFirstSoilMoistureRead = true;
+let MinSoilMoisture;
+let MaxSoilMoisture;
+
+function SoilMoisture_handle(arrString) {
     let moistureValue = parseInt(arrString[1]);
 
     if (moistureValue === 1024) {
-        let msg = checkFirstValue ? "Soil Moisture not detected" : "Soil Moisture Sensor not plugged in";
+        let msg = isFirstSoilMoistureRead ? "Soil Moisture not detected" : "Soil Moisture Sensor not plugged in";
         TextAreaSoilMoisture.value = msg;
         TextAreaSoilMin.value = "";
         TextAreaSoilMax.value = "";
         TextAreaSoilRange.value = "";
-        checkFirstValue = false;
+        isFirstSoilMoistureRead = false;
     } else {
-        if (checkFirstValue) {
+        if (isFirstSoilMoistureRead) {
             TextAreaSoilMoisture.value = "Init Ok";
             MinSoilMoisture = moistureValue;
             MaxSoilMoisture = moistureValue;
-            checkFirstValue = false;
+            isFirstSoilMoistureRead = false;
         } else {
             TextAreaSoilMoisture.value = moistureValue;
             document.getElementById('progressSoil').value = moistureValue;
@@ -328,61 +290,105 @@ function handleSoilMoisture(arrString) {
     }
 }
 
-function handleBME280(arrString) {
+function SoilMoisture_button() {
+    send("SoilMoisture Test");
+    isFirstSoilMoistureRead = true;
+}
+
+//********BME280********//
+let TextAreaBME280 = document.getElementById("BME280");
+let TextAreaBME_Tem = document.getElementById("BME_Tem");
+let TextAreaBME_Hum = document.getElementById("BME_Hum");
+let TextAreaBME_Pres = document.getElementById("BME_Pres");
+let TextAreaRelAlt = document.getElementById("BME_RelAlt");
+let isFirstBMERead = true;
+let RelAltRef ;
+let countBMEValue;
+let sumAlt = 0;
+
+function BME280_handle(arrString) {
     if(arrString[2] === 'Error'){
         const buttonBME = document.getElementById('BME280-button');
         buttonBME.disabled = true;
         TextAreaBME280.value = "BME280 not detected";    
     }
     else TextAreaBME280.value = arrString.slice(1, 9).join(' ');
-    if(arrString[1] === 'Tem'){
-        TextAreaBME_Tem.value = parseFloat(arrString[2]).toFixed(1).toString() + " °C";
-        TextAreaBME_Hum.value = parseFloat(arrString[4]).toFixed(1).toString() + " %";
-        TextAreaBME_Pres.value = arrString[6].toString()                       + " hPa";
-        let ALtRawFloat = parseFloat(arrString[8]);
-        if(checkFirstValueBME){
-            countBMEValue++;
-            sumAlt += ALtRawFloat;
-            if(countBMEValue === 10){
-                RelAltRef = sumAlt/10;
-                checkFirstValueBME = false;
-            }
+    if(arrString[1] !== 'Tem') return;
+    TextAreaBME_Tem.value = parseFloat(arrString[2]).toFixed(1).toString() + " °C";
+    TextAreaBME_Hum.value = parseFloat(arrString[4]).toFixed(1).toString() + " %";
+    TextAreaBME_Pres.value = arrString[6].toString()                       + " hPa";
+    let ALtRawFloat = parseFloat(arrString[8]);
+    if(isFirstBMERead){
+        countBMEValue++;
+        sumAlt += ALtRawFloat;
+        if(countBMEValue === 10){
+            RelAltRef = sumAlt/10;
+            isFirstBMERead = false;
         }
-        if(!checkFirstValueBME) TextAreaRelAlt.value = (ALtRawFloat - RelAltRef).toFixed(2).toString() + " m";
     }
+    if(!isFirstBMERead) TextAreaRelAlt.value = (ALtRawFloat - RelAltRef).toFixed(2).toString() + " m";
 }
 
-function handleWiFi(arrString) {
+function BME280_button(){
+    send("BME280 Test");
+    isFirstBMERead = true;
+    countBMEValue = 0;
+    sumAlt = 0;
+}
+
+//********WiFi********//
+let TextAreaESP = document.getElementById("ESP");
+let TextAreaSSIDfromWeb = document.getElementById('ssid');
+let TextAreaPasswordfromWeb = document.getElementById('password');
+let TextAreaUTC_Time = document.getElementById("UTC_Time");
+let TextAreaBrowser_Time = document.getElementById("Browser_Timezone");
+let TextAreaLocal_Time = document.getElementById("Local_Time");
+
+function WiFi_handle(arrString) {
     if(arrString[1] === 'UTC'){
         TextAreaUTC_Time.value = arrString[3].replace('T', ' ').replace('Z', '');
-        const utcDate = new Date(arrString[3]);  // Chuyển chuỗi UTC thành đối tượng Date
-        const parts = utcDate.toString().split(' ');  // Chuyển Date thành chuỗi rồi tách thành các phần
-        // Hiển thị múi giờ vào TextAreaBrowser_Timezone
+        const utcDate = new Date(arrString[3]);  
+        const parts = utcDate.toString().split(' ');  
         if (parts[5]) {
             const timeZone = parts[5].substring(3, 8);
             TextAreaBrowser_Time.value = timeZone;
         }
-        // Tính giờ địa phương
-        const localTime = utcDate.toLocaleString('en-GB', { hour12: false });  // Lấy giờ địa phương với định dạng 'en-GB'
-        // Tách chuỗi localTime thành ngày và giờ
+        const localTime = utcDate.toLocaleString('en-GB', { hour12: false });  
         let [datePart, timePart] = localTime.split(', ');
-        // Thay dấu '/' bằng dấu '-'
         datePart = datePart.replace(/\//g, '-');
-        // Đảo ngược vị trí của ngày/tháng/năm thành năm/tháng/ngày
         const [day, month, year] = datePart.split('-');
         const formattedDate = `${year}-${month}-${day}`;
-        // Tạo chuỗi kết quả cuối cùng
         const formattedLocalTime = `${formattedDate} ${timePart}`;
-        // Hiển thị giờ địa phương vào TextAreaLocal_Time
-        TextAreaLocal_Time.value = formattedLocalTime;  // Kết quả ví dụ: "2024-10-15 09:06:17"
-        // TextAreaLocal_Time.value = utcDate;
+        TextAreaLocal_Time.value = formattedLocalTime;
     }
     else{
-        TextAreaESP.value = lines[0] + "\n" + lines[1] + "\n" + lines[2];
+        const msgWiFi = string.split(/[\r\n]+/);
+        TextAreaESP.value = msgWiFi[0] + "\n" + msgWiFi[1] + "\n" + msgWiFi[2];
     }
 }
 
-function handleMAX30102(arrString) {
+async function WiFi_button(){
+    if(TextAreaSSIDfromWeb.value === "" || TextAreaPasswordfromWeb.value === ""){
+        TextAreaESP.value = "Input WiFi SSID and Password to Test WiFi";
+    }
+    else{
+        TextAreaESP.value = "";
+        TextAreaUTC_Time.value = "";
+        TextAreaBrowser_Time.value = "";
+        TextAreaLocal_Time.value = "";
+        await send("WiFi SSID " + TextAreaSSIDfromWeb.value);
+        await send("WiFi Password " + TextAreaPasswordfromWeb.value);
+        await send("WiFi Connect");
+        TextAreaESP.value = "Connecting ...";
+    }
+}
+
+//********MAX30102********//
+let TextAreaMAX30102 = document.getElementById("MAX30102");
+let TextAreaBeat = document.getElementById("beat");
+let squareFinger = document.getElementById('squareFinger');
+
+function MAX30102_handle(arrString) {
     if(arrString[2] === 'Error'){
         const buttonMAX30102 = document.getElementById('MAX30102-button');
         buttonMAX30102.disabled = true;
@@ -395,51 +401,17 @@ function handleMAX30102(arrString) {
         if(arrString[1] === 'No') squareFinger.style.backgroundColor = "white";
         else {
             squareFinger.style.backgroundColor = "red";
-            document.getElementById('beat').value = arrString[2];
+            TextAreaBeat.value = arrString[2];
         }
         TextAreaMAX30102.value = arrString[1] + " " + arrString[2];
     }
 }
 
-// Hàm connectWiFi sử dụng async/await để xử lý delay
-async function connectWiFi() {
-    SSIDfromWeb = document.getElementById('ssid').value;
-    PasswordfromWeb = document.getElementById('password').value;
-    
-    if(SSIDfromWeb === "" || PasswordfromWeb === ""){
-        TextAreaESP.value = "Input WiFi SSID and Password to Test WiFi";
-    }
-    else{
-        TextAreaESP.value = "";
-        TextAreaUTC_Time.value = "";
-        TextAreaBrowser_Time.value = "";
-        TextAreaLocal_Time.value = "";
-        // Gửi thông tin SSID
-        await send("WiFi SSID " + SSIDfromWeb);
-        // Gửi thông tin Password
-        await send("WiFi Password " + PasswordfromWeb);
-        // Gửi lệnh kết nối
-        await send("WiFi Connect");
-        TextAreaESP.value = "Connecting ...";
-    }
+function MAX30102_button(){
+    send("MAX30102 Test");
 }
 
-function TestSoilMoisture(){
-    send("SoilMoisture Test");
-    checkFirstValue = true;
-}
-
-function TestOLED(){
-    TextAreaOLED.value = "Observe the OLED screen";
-    send("OLED Test");
-}
-
-function TestBME280(){
-    send("BME280 Test");
-    checkFirstValueBME = true;
-    countBMEValue = 0;
-    sumAlt = 0;
-}
+//****************//
 
 document.addEventListener('DOMContentLoaded', (event) => {
     buttons.forEach(button => {
