@@ -204,7 +204,7 @@ p {
 
 }
 
-#BME_Tem, #BME_Hum, #BME_Pres, #BME_RelAlt{
+#BME_Tem, #BME_Hum, #BME_Pres, #BME_RelAlt, #MAX_beat, #MAX_bpm{
   height: 20px;
   width: 70px;
   font-size: 10px;
@@ -215,6 +215,11 @@ p {
   resize: none;
   padding: 0 3px;
 }
+
+#MAX_beat, #MAX_bpm{
+  width: 40px;
+}
+
 
 .bme{
   display: flex;
