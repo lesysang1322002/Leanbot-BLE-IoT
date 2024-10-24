@@ -399,7 +399,10 @@ function MAX30102_handle(arrString) {
         TextAreaMAX30102.value = arrString[1] + " " + arrString[2];
     }
     else{
-        if(arrString[1] === 'No') squareFinger.style.backgroundColor = "white";
+        if(arrString[1] === 'No') {
+            squareFinger.style.backgroundColor = "white";
+            TextAreaBeat.value = "";
+        }
         else {
             squareFinger.style.backgroundColor = "red";
             TextAreaBeat.value = arrString[2];
