@@ -70,27 +70,27 @@ function onDisconnected(event) {
 }
 
 async function send(data) {
-    if (gattCharacteristic) {
-        console.log("You -> " + data);
-        let start = 0;
-        let dataLength = data.length;
-        while (start < dataLength) {
-            let subStr = data.substring(start, start + 16);
-            try {
-                await gattCharacteristic.writeValue(str2ab(subStr));
-            } catch (error) {
-                console.error("Error writing to characteristic:", error);
-                break;
-            }
-            start += 16;
-        }
-        try {
-            await gattCharacteristic.writeValue(str2ab('\n'));
-        } catch (error) {
-            console.error("Error writing newline to characteristic:", error);
-        }
-    } else {
+    if (!gattCharacteristic) {
         console.log("GATT Characteristic not found.");
+        return;
+    }
+    console.log("You -> " + data);
+    let start = 0;
+    let dataLength = data.length;
+    while (start < dataLength) {
+        let subStr = data.substring(start, start + 16);
+        try {
+            await gattCharacteristic.writeValue(str2ab(subStr));
+        } catch (error) {
+            console.error("Error writing to characteristic:", error);
+            break;
+        }
+        start += 16;
+    }
+    try {
+        await gattCharacteristic.writeValue(str2ab('\n'));
+    } catch (error) {
+        console.error("Error writing newline to characteristic:", error);
     }
 }
 
