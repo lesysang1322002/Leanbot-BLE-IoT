@@ -188,7 +188,7 @@ function handleChangedValue(event) {
     let valueString = textDecoder.decode(dataArray);
 
     string += valueString;
-    if ( ! valueString.endsWith( '\n' )) return;
+    if (! valueString.endsWith( '\n' )) return;
    
     console.log("Nano > " + string);
     string.split(/[\r\n]+/).forEach(line => {
