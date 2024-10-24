@@ -70,7 +70,7 @@ function onDisconnected(event) {
 }
 
 async function send(data) {
-    if (!gattCharacteristic) {
+    if (! gattCharacteristic) {
         console.log("GATT Characteristic not found.");
         return;
     }
