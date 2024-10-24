@@ -55,6 +55,26 @@ function requestBluetoothDevice() {
     });
 }}
 
+function checkMessageWithin5Seconds() {
+    // Thiết lập hàm setTimeout để kết thúc sau 5 giây
+    timeoutCheckMessage = setTimeout(function() {
+    console.log("5 seconds timeout, message incorrect.");
+    let infoBox = document.getElementById("infopopup");
+    // Hiển thị info box
+    infoBox.style.display = "block";
+    document.addEventListener("click", function(event) {
+        if (!infoBox.contains(event.target)) {
+            infoBox.style.display = "none";
+        }
+    });
+    }, 5000);
+}
+
+function  logstatus(text){
+    const navbarTitle = document.getElementById('navbarTitle');
+    navbarTitle.textContent = text;
+}
+
 function disconnect(){
     logstatus("SCAN to connect");
     console.log("Disconnected from: " + dev.name);
@@ -120,11 +140,6 @@ function disableButtons() {
     });
 }
 
-function  logstatus(text){
-    const navbarTitle = document.getElementById('navbarTitle');
-    navbarTitle.textContent = text;
-}
-
 const button = document.getElementById("toggleButton");
 function toggleFunction() {
     if (button.innerText == "Scan") {
@@ -146,21 +161,6 @@ function ResetVariable(){
     document.querySelectorAll('.item').forEach(item => {
         item.classList.remove('active');
     });
-}
-
-function checkMessageWithin5Seconds() {
-    // Thiết lập hàm setTimeout để kết thúc sau 5 giây
-    timeoutCheckMessage = setTimeout(function() {
-    console.log("5 seconds timeout, message incorrect.");
-    let infoBox = document.getElementById("infopopup");
-    // Hiển thị info box
-    infoBox.style.display = "block";
-    document.addEventListener("click", function(event) {
-        if (!infoBox.contains(event.target)) {
-            infoBox.style.display = "none";
-        }
-    });
-    }, 5000);
 }
 
 function clearTextArea() {
