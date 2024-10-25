@@ -128,6 +128,7 @@ label {
   font-weight: bold;
   margin-bottom: 0px;
   font-family: 'Roboto Mono', monospace;
+  padding-right: 4px;
 }
 .container {
   display: flex;
@@ -240,7 +241,8 @@ label {
 }
 
 #Local_Time, #UTC_Time{
-  width: 120px !important;
+  width: 125px !important;
+  resize: none;
 }
 
 #ESP{
@@ -293,6 +295,11 @@ label {
 #Block_WiFi{
   height: auto;
   margin-top: auto !important;
+}
+
+.utc{
+  display: flex;
+  align-items: center;
 }
 
 @media screen and (orientation: landscape) {
