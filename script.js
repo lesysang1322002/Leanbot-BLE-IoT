@@ -390,7 +390,7 @@ const MAX30102_TextArea_BPM = document.getElementById("MAX_bpm");
 const MAX30102_Square = document.getElementById('squareFinger');
 
 function MAX30102_handle(arrString) {
-    MAX30102_TextArea.value = arrString[1] + " " + arrString[2];
+    MAX30102_TextArea.value = arrString.slice(1, 5).join(' ');
 
     if(arrString[1] === 'Init'){
         if(arrString[2] === 'Error'){

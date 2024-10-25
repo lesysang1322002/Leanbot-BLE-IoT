@@ -123,6 +123,12 @@ p {
 .monospace {
   font-family: 'Roboto Mono', monospace;
 }
+
+label {
+  font-weight: bold;
+  margin-bottom: 0px;
+  font-family: 'Roboto Mono', monospace;
+}
 .container {
   display: flex;
   flex-wrap: wrap;
@@ -176,10 +182,6 @@ p {
   font-size: 12px;
 }
 
-#SoilMin, #SoilMax, #SoilRange {
-  width: 45px;
-}
-
 .row{
   padding-top: 5px;
   display: flex;
@@ -201,10 +203,9 @@ p {
   text-align: left;
   margin-right: 10px;
   padding: 0 3px;
-
 }
 
-#BME_Tem, #BME_Hum, #BME_Pres, #BME_RelAlt, #MAX_beat, #MAX_bpm{
+#BME_Tem, #BME_Hum, #BME_Pres, #BME_RelAlt, #MAX_beat, #MAX_bpm, #SoilMin, #SoilMax, #SoilRange{
   height: 20px;
   width: 70px;
   font-size: 10px;
@@ -216,7 +217,7 @@ p {
   padding: 0 3px;
 }
 
-#MAX_beat, #MAX_bpm{
+#MAX_beat, #MAX_bpm, #SoilMin, #SoilMax, #SoilRange{
   width: 40px;
 }
 
@@ -252,19 +253,17 @@ p {
 }
 
 #ESP-button{
-  height: 43px;
-  width: 78px;
+  height: 46px;
+  width: 75px;
   text-align: center;
-  margin: 0px;
-  margin-bottom: 36px;
-  margin-top: 3px;
+  margin-bottom: 5px;
 }
 
 #HC-SR501-button, #OLED-button, #MAX30102-button{
   margin-top: 10px;
 }
 
-#squareHCSR501, #squareFinger, #beat{
+#squareHCSR501, #squareFinger{
   width: 100px;
   height: auto;
   margin: 5px auto;
@@ -273,11 +272,6 @@ p {
   border: 2px solid #ccc;
   height: 35px;
   resize: none;
-}
-
-#beat{
-  text-align: center;
-  font-size: 12px;
 }
 
 #progressSoil{
@@ -294,6 +288,11 @@ p {
   border: 2px solid #ccc;
   border-radius: 3px;
   padding-left: 10px;
+}
+
+#Block_WiFi{
+  height: auto;
+  margin-top: auto !important;
 }
 
 @media screen and (orientation: landscape) {
