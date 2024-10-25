@@ -146,7 +146,6 @@ label {
   flex-direction: column;
   padding-bottom: 0px;
 }
-
 .item.active {
   background-color: lightblue;
 }
@@ -173,16 +172,10 @@ label {
   border-radius: 3px;
   padding: 0 3px;
 }
-
 .col_tem{
   padding-left: 10px;
   padding-right: 5px;
 }
-
-#SoilMoisture, #BME280, #MAX30102, #OLED, #HC-SR501{
-  font-size: 12px;
-}
-
 .row{
   padding-top: 5px;
   display: flex;
@@ -194,8 +187,10 @@ label {
   align-items: left;
   margin-top: 3px;
 }
-
-#ssid, #password, #Local_Time, #Browser_Timezone, #UTC_Time{
+#SoilMoisture_TextArea, #BME280_TextArea, #MAX30102_TextArea, #OLED_TextArea, #HCSR501_TextArea{
+  font-size: 12px;
+}
+#WiFi_TextArea_SSIDfromWeb, #WiFi_TextArea_PasswordfromWeb, #WiFi_TextArea_LocalTime, #WiFi_TextArea_BrowserTimeZone, #WiFi_TextArea_UTCTime{
   height: 20px;
   font-size: 10px;
   padding: 0;
@@ -206,7 +201,8 @@ label {
   padding: 0 3px;
 }
 
-#BME_Tem, #BME_Hum, #BME_Pres, #BME_RelAlt, #MAX_beat, #MAX_bpm, #SoilMin, #SoilMax, #SoilRange{
+#BME280_TextArea_Tem, #BME280_TextArea_Hum, #BME280_TextArea_Pres, #BME280_TextArea_RelAlt, #MAX30102_TextArea_Beat,
+#MAX30102_TextArea_BPM, #SoilMoisture_TextArea_Min, #SoilMoisture_TextArea_Max, #SoilMoisture_TextArea_Range{
   height: 20px;
   width: 70px;
   font-size: 10px;
@@ -218,10 +214,9 @@ label {
   padding: 0 3px;
 }
 
-#MAX_beat, #MAX_bpm, #SoilMin, #SoilMax, #SoilRange{
+#MAX30102_TextArea_Beat, #MAX30102_TextArea_BPM, #SoilMoisture_TextArea_Min, #SoilMoisture_TextArea_Max, #SoilMoisture_TextArea_Range{
   width: 40px;
 }
-
 
 .bme{
   display: flex;
@@ -236,16 +231,16 @@ label {
   margin-bottom: 0px;
 }
 
-#Browser_Timezone{
+#WiFi_TextArea_BrowserTimeZone{
   width: 40px;
 }
 
-#Local_Time, #UTC_Time{
+#WiFi_TextArea_LocalTime, #WiFi_TextArea_UTCTime{
   width: 125px !important;
   resize: none;
 }
 
-#ESP{
+#WiFi_TextArea{
   overflow: auto;
   white-space: pre;
   text-align: left;
@@ -265,7 +260,7 @@ label {
   margin-top: 10px;
 }
 
-#squareHCSR501, #squareFinger{
+#HCSR501_Square, #MAX30102_Square{
   width: 100px;
   height: auto;
   margin: 5px auto;
@@ -276,7 +271,7 @@ label {
   resize: none;
 }
 
-#progressSoil{
+#SoilMoisture_Progress{
   width: 100%;
   height: 20px;
   margin-top: 5px;
