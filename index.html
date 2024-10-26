@@ -37,59 +37,59 @@
     <div class="container">
         <div class="item">
             <label class="sensor-name"><strong>HC-SR501</strong></label>
-            <textarea class="sensor-value monospace" id = "HCSR501_TextArea" readonly></textarea>
-            <div class = "btn" id = "HCSR501_Square"></div>
-            <button class = "btn btn-primary-test" id = "HC-SR501-button" onclick = "HCSR501_button()">Test</button>
+            <textarea class="sensor-value monospace" id ="HCSR501_TextArea" readonly></textarea>
+            <div class="btn" id="HCSR501_Square"></div>
+            <button class="btn btn-primary-test" id ="HC-SR501-button" onclick="HCSR501_button()">Test</button>
         </div>
-        <div class = "item">
-            <label class = "sensor-name"><strong>OLED</strong></label>
-            <textarea class = "sensor-value monospace" id = "OLED_TextArea" readonly></textarea>
-            <button class = "btn btn-primary-test" id = "OLED-button" onclick = "OLED_button()">Test</button>
+        <div class="item">
+            <label class="sensor-name"><strong>OLED</strong></label>
+            <textarea class="sensor-value monospace" id="OLED_TextArea" readonly></textarea>
+            <button class="btn btn-primary-test" id="OLED-button" onclick="OLED_button()">Test</button>
         </div>
-        <div class = "item">
-            <label class = "sensor-name"><strong>Soil Moisture</strong></label>
-            <textarea class = "sensor-value monospace" id = "SoilMoisture_TextArea" readonly></textarea>
-            <progress id = "SoilMoisture_Progress" max = "1024" value = "0"></progress>
-            <div class = "row" style = "margin-top: 10px;padding-top: 0px">
-                <div class="form-group" style = "margin-bottom: 10px" >
+        <div class="item">
+            <label class="sensor-name"><strong>Soil Moisture</strong></label>
+            <textarea class="sensor-value monospace" id="SoilMoisture_TextArea" readonly></textarea>
+            <progress id="SoilMoisture_Progress" max="1024" value="0"></progress>
+            <div class="row" style="margin-top: 10px;padding-top: 0px">
+                <div class="form-group" style="margin-bottom: 10px" >
                     <label for="message">Min</label>
-                    <textarea id="SoilMoisture_TextArea_Min" name="message" class = "monospace"readonly></textarea>
+                    <textarea id="SoilMoisture_TextArea_Min" name="message" class="monospace" readonly></textarea>
                 </div>
 
-                <div class = "form-group" style = "margin-bottom: 10px" >
-                    <label for = "message">Max</label>
-                    <textarea id = "SoilMoisture_TextArea_Max" name = "message" class = "monospace"readonly></textarea>
+                <div class="form-group" style="margin-bottom: 10px" >
+                    <label for="message">Max</label>
+                    <textarea id="SoilMoisture_TextArea_Max" name="message" class="monospace" readonly></textarea>
                 </div>
 
-                <div class="form-group" style = "margin-bottom: 10px" >
+                <div class="form-group" style="margin-bottom: 10px" >
                     <label for="message">Range</label>
-                    <textarea id="SoilMoisture_TextArea_Range" name="message" class = "monospace"readonly></textarea>
+                    <textarea id="SoilMoisture_TextArea_Range" name="message" class="monospace" readonly></textarea>
                 </div>
             </div>
-            <button style = "margin-top: 0px" class="btn btn-primary-test" id="Soil-Moisture-button" onclick = "SoilMoisture_button()" >Test</button>
+            <button style="margin-top: 0px" class="btn btn-primary-test" id="Soil-Moisture-button" onclick="SoilMoisture_button()" >Test</button>
         </div>
     </div>
 
     <div class="container">
-        <div class = "item" style="margin-bottom: 0px;padding-bottom: 0px;">
-            <label class = "sensor-name"><strong>BME280</strong></label>
-            <textarea class =" sensor-value monospace" id = "BME280_TextArea" readonly></textarea>
-            <div class = "col" style = "margin-top: 10px; padding-top: 0px">
-                <div class="bme"  style = "margin: 0px">
+        <div class="item" style="margin-bottom: 0px;padding-bottom: 0px;">
+            <label class="sensor-name"><strong>BME280</strong></label>
+            <textarea class="sensor-value monospace" id="BME280_TextArea" readonly></textarea>
+            <div class="col" style="margin-top: 10px; padding-top: 0px">
+                <div class="bme" style="margin: 0px">
                     <label for="Tem">&nbsp;&nbsp;Temperature</label>
-                    <textarea id="BME280_TextArea_Tem" name="Tem" class = "monospace"readonly></textarea>
+                    <textarea id="BME280_TextArea_Tem" name="Tem" class="monospace" readonly></textarea>
                 </div>
-                <div class="bme"  style = "margin: 0px">
+                <div class="bme"  style="margin: 0px">
                     <label for="Hum">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Humidity</label>
-                    <textarea id="BME280_TextArea_Hum" name="Hum" class = "monospace"readonly></textarea>
+                    <textarea id="BME280_TextArea_Hum" name="Hum" class="monospace"readonly></textarea>
                 </div>
-                <div class="bme"  style = "margin: 0px">
+                <div class="bme"  style="margin: 0px">
                     <label for="Pres">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Pressure</label>
-                    <textarea id="BME280_TextArea_Pres" name="Pres" class = "monospace"readonly></textarea>
+                    <textarea id="BME280_TextArea_Pres" name="Pres" class="monospace"readonly></textarea>
                 </div>
-                <div class="bme"  style = "margin: 0px; margin-bottom: 0px;">
+                <div class="bme"  style="margin: 0px; margin-bottom: 0px;">
                     <label for="RelAlt">Rel. Altitude</label>
-                    <textarea id="BME280_TextArea_RelAlt" name="RelAlt" class = "monospace" readonly></textarea>
+                    <textarea id="BME280_TextArea_RelAlt" name="RelAlt" class="monospace" readonly></textarea>
                 </div>
             </div>
             <button class="btn btn-primary-test" id="BME280-button" onclick="BME280_button()">Test</button>
@@ -97,29 +97,29 @@
         <div class="item" style="margin-bottom: 0px;padding-bottom: 0px;">
 
             <label class="sensor-name"><strong>WiFi</strong></label>
-            <textarea class="sensor-value monospace" id = "WiFi_TextArea" readonly></textarea>
-            <div class="utc" style = "margin: 0px; margin-top: 10px">
-                <label for="utc_time" style = "margin: 0px;">&nbsp;&nbsp;UTC Time</label>
+            <textarea class="sensor-value monospace" id="WiFi_TextArea" readonly></textarea>
+            <div class="utc" style="margin: 0px; margin-top: 10px">
+                <label for="utc_time" style="margin: 0px;">&nbsp;&nbsp;UTC Time</label>
                 <textarea id="WiFi_TextArea_UTCTime" name="utc_time" class="monospace" readonly></textarea>
             </div>
             <div class="row_WiFi">
-                <div class="form-group" style = "margin: 0px">
-                    <label for="local_time" style = "margin: 0px;">Local Time</label>
+                <div class="form-group" style="margin: 0px">
+                    <label for="local_time" style="margin: 0px;">Local Time</label>
                     <textarea id="WiFi_TextArea_LocalTime" name="local_time" class="monospace"readonly></textarea>
                 </div>
-                <div class="form-group" style = "margin: 0px; ">
+                <div class="form-group" style="margin: 0px; ">
                     <label for="browser_timezone">Zone</label>
-                    <textarea style = "margin-right: 0px;" id="WiFi_TextArea_BrowserTimeZone" name="browser_timezone" class="monospace"readonly></textarea>
+                    <textarea style="margin-right: 0px;" id="WiFi_TextArea_BrowserTimeZone" name="browser_timezone" class="monospace"readonly></textarea>
                 </div>
             </div>
-            <div class="row_WiFi" id = "Block_WiFi">
-                <div class = "column"  style = "margin-bottom:5px">
-                    <div class="form-group" style = "margin: 0px;">
-                        <label for="ssid" style = "margin: 0px; ">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SSID</label>
+            <div class="row_WiFi" id="Block_WiFi">
+                <div class="column"  style="margin-bottom: 5px">
+                    <div class="form-group" style="margin: 0px;">
+                        <label for="ssid" style="margin: 0px; ">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SSID</label>
                         <input type="text" id="WiFi_TextArea_SSIDfromWeb" name="ssid">
                     </div>
-                    <div class="form-group" style = "margin: 0px">
-                        <label for="password" style = "margin: 0px; ">&nbsp;&nbsp;Password</label>
+                    <div class="form-group" style="margin: 0px">
+                        <label for="password" style="margin: 0px; ">&nbsp;&nbsp;Password</label>
                         <input type="text" id="WiFi_TextArea_PasswordfromWeb" name="password">
                     </div>
                 </div>
@@ -129,23 +129,23 @@
         
         <div class="item">
             <label class="sensor-name"><strong>MAX30102</strong></label>
-            <textarea class="sensor-value monospace" id = "MAX30102_TextArea" readonly></textarea>
-            <div class = "bme" style = "margin: 0px">
-                <div style = "margin: 0px; margin-top: 10px; margin-bottom: 5px " class = "btn" id = "MAX30102_Square"></div>
+            <textarea class="sensor-value monospace" id="MAX30102_TextArea" readonly></textarea>
+            <div class="bme" style="margin: 0px">
+                <div style="margin: 0px; margin-top: 10px; margin-bottom:5px " class ="btn" id="MAX30102_Square"></div>
             </div>
-            <div class = "bme" style = "margin: 0px">
+            <div class ="bme" style="margin: 0px">
                 <label for="beat">Beat</label>
-                <textarea style = "margin: 0px;" name = "beat" class="monospace" id = "MAX30102_TextArea_Beat" readonly></textarea>
+                <textarea style="margin: 0px;" name="beat" class="monospace" id="MAX30102_TextArea_Beat" readonly></textarea>
             </div>
-            <div class = "bme" style = "margin: 0px">
+            <div class ="bme" style="margin: 0px">
                 <label for="bpm">&nbsp;BPM</label>
-                <textarea style = "margin: 0px;" name = "bpm" class="monospace" id = "MAX30102_TextArea_BPM" readonly></textarea>
+                <textarea style ="margin: 0px;" name="bpm" class="monospace" id="MAX30102_TextArea_BPM" readonly></textarea>
             </div>
-            <button class="btn btn-primary-test" id = "MAX30102-button" onclick = "MAX30102_button()">Test</button>
+            <button class="btn btn-primary-test" id="MAX30102-button" onclick="MAX30102_button()">Test</button>
         </div>
     </div>
     
     <p class="openLinkCode"> <a href="https://git.pythaverse.space/quang.dinh/LeanbotDistributors/blob/master/Leanbot_Testing/Leanbot_IoT/code/Leanbot_IOT_test.ino">Leanbot code</a></p>
 </body>
-    <script type = "text/javascript" src="script.js"></script>
+    <script type="text/javascript" src="script.js"></script>
 </html>
