@@ -174,7 +174,6 @@ function clearTextArea() {
 }
 
 let string = "";
-let lines = [];
 function handleChangedValue(event) {
     const data = event.target.value;
     const dataArray = new Uint8Array(data.buffer);
@@ -182,7 +181,7 @@ function handleChangedValue(event) {
     const valueString = textDecoder.decode(dataArray);
 
     string += valueString;
-    lines = string.split(/[\r\n]+/);
+    const lines = string.split(/[\r\n]+/);
     string = lines.pop() || "";
     lines.forEach(line => {
         if (line) { 
@@ -327,7 +326,6 @@ function BME280_button(){
 //********WiFi********//
 function WiFi_handle(arrString) {
     if(arrString[1] === 'to' || arrString[1] === 'Init') {
-       console.log("arrString: " + arrString);
        if(arrString[3] === 'module') UI('WiFi_TextArea').value = arrString.join(" ") + '\n';
        else if (arrString[3] === 'network') UI('WiFi_TextArea').value += arrString.join(" ") + '\n';
        else UI('WiFi_TextArea').value += arrString.join(" ");
