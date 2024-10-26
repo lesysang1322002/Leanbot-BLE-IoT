@@ -156,13 +156,16 @@ function resetVariable(){
     document.querySelectorAll('.item').forEach(item => {
         item.classList.remove('active');
     });
+    UI('HCSR501_Square').style.backgroundColor = "transparent";
+    UI('MAX30102_Square').style.backgroundColor = "transparent";
+    UI('SoilMoisture_Progress').value = 0;
 }
 
 function clearTextArea() {
     const textAreas = [
         'HCSR501_TextArea', 'OLED_TextArea', 'SoilMoisture_TextArea', 'BME280_TextArea', 'WiFi_TextArea', 'MAX30102_TextArea', 
         'BME280_TextArea_Tem', 'BME280_TextArea_Hum', 'BME280_TextArea_Pres', 'BME280_TextArea_RelAlt', 'SoilMoisture_TextArea_Min',
-        'SoilMoisture_TextArea_Max', 'SoilMoisture_TextArea_Range', 'MAX30102_TextArea_Beat', 'MAX30102_TextArea_Beat',
+        'SoilMoisture_TextArea_Max', 'SoilMoisture_TextArea_Range', 'MAX30102_TextArea_Beat', 'MAX30102_TextArea_BPM',
         'WiFi_TextArea_PasswordfromWeb', 'WiFi_TextArea_SSIDfromWeb', 'WiFi_TextArea_UTCTime', 'WiFi_TextArea_BrowserTimeZone', 'WiFi_TextArea_LocalTime' 
     ];
     // Reset value for each TextArea
