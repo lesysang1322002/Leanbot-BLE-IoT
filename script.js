@@ -204,9 +204,9 @@ function handleSerialLine(line) {
         case 'OLED'          : return OLED_handle(arrString);
         case 'SoilMoisture'  : return SoilMoisture_handle(arrString);
         case 'BME280'        : return BME280_handle(arrString);
-        case 'WiFi':
-        case 'Connecting'    : return WiFi_handle(arrString, line);
-        case 'MAX30102'      : return MAX30102_handle(arrString, line);
+        case 'Connecting'    :
+        case 'WiFi'          : return WiFi_handle(arrString);
+        case 'MAX30102'      : return MAX30102_handle(arrString);
         default              : console.log("Unknown message type");
     }
 }
@@ -325,9 +325,13 @@ function BME280_button(){
 }
 
 //********WiFi********//
-function WiFi_handle(arrString, line) {
-    if(arrString[1] !== 'UTC' || arrString[1] === 'Connecting') {
-       UI('WiFi_TextArea').value += line + '\n';
+function WiFi_handle(arrString) {
+    if(arrString[1] === 'to' || arrString[1] === 'Init') {
+       console.log("arrString: " + arrString);
+       if(arrString[3] === 'module') UI('WiFi_TextArea').value = arrString.join(" ") + '\n';
+       else if (arrString[3] === 'network') UI('WiFi_TextArea').value += arrString.join(" ") + '\n';
+       else UI('WiFi_TextArea').value += arrString.join(" ");
+       return;
     }
 
     UI('WiFi_TextArea_UTCTime').value = arrString[3].replace('T', ' ').replace('Z', '');
