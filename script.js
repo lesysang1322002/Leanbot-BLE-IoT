@@ -358,9 +358,9 @@ async function WiFi_button(){
         return;
     }
 
-    await send("WiFi SSID " + UI('WiFi_TextArea_SSIDfromWeb').value);
-    await send("WiFi Password " + UI('WiFi_TextArea_PasswordfromWeb').value);
-    await send("WiFi Connect");
+    await send("WiFi Password "+ UI('WiFi_TextArea_PasswordfromWeb').value);
+    await send("WiFi Connect " + UI('WiFi_TextArea_SSIDfromWeb').value);
+
     UI('WiFi_TextArea').value = "";
     UI('WiFi_TextArea_UTCTime').value = "";
     UI('WiFi_TextArea_BrowserTimeZone').value = "";
