@@ -119,6 +119,10 @@ function str2ab(str){
     return buf;
 }
 
+function UI(elmentID) {
+    return document.getElementById(elmentID);
+}
+
 const buttons = document.querySelectorAll('.btn-primary-test');
 buttons.forEach(button => {
     button.disabled = true;
@@ -223,10 +227,6 @@ function checkCodefromLeanbot(line) {
     checkMsg = true;
     console.log("Correct message.");
 } 
-
-function UI(elmentID) {
-    return document.getElementById(elmentID);
-}
 
 //********HC-SR501********//
 function HCSR501_handle(arrString) {
