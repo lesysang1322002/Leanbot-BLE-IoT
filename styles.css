@@ -247,6 +247,10 @@ label {
   resize: none;
 }
 
+#WiFi_TextArea_SSIDfromWeb, #WiFi_TextArea_PasswordfromWeb{
+  width: 105px;
+}
+
 #WiFi_TextArea{
   overflow: auto;
   white-space: pre;
@@ -256,12 +260,9 @@ label {
   resize: none;
 }
 
-/* #ESP-button{
-  height: 46px;
-  width: 75px;
-  text-align: center;
-  margin-bottom: 5px;
-} */
+#ESP-button{
+  margin-bottom: 10px;
+}
 
 #HC-SR501-button, #OLED-button, #MAX30102-button{
   margin-top: 10px;
