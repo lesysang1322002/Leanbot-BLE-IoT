@@ -268,6 +268,7 @@ function SoilMoisture_handle(arrString) {
         UI('SoilMoisture_TextArea_Min').value = "";
         UI('SoilMoisture_TextArea_Max').value = "";
         UI('SoilMoisture_TextArea_Range').value = "";
+        UI('SoilMoisture-button').disabled = true;
         return;
     }
 
@@ -280,6 +281,7 @@ function SoilMoisture_handle(arrString) {
     UI('SoilMoisture_TextArea_Min').value = SoilMoisture_IntMin;
     UI('SoilMoisture_TextArea_Max').value = SoilMoisture_IntMax;
     UI('SoilMoisture_TextArea_Range').value = SoilMoisture_IntMax - SoilMoisture_IntMin;
+    UI('SoilMoisture-button').disabled = false;
 }
 
 function SoilMoisture_button() {

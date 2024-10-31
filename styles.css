@@ -117,6 +117,11 @@ p {
   height: auto;
   margin-top: auto !important;
 }
+
+button:disabled {
+  background-color: #cccccc !important;
+}
+
 #change-image {
   width: 160px;
 }
@@ -187,9 +192,11 @@ label {
   align-items: left;
   margin-top: 3px;
 }
+
 #SoilMoisture_TextArea, #BME280_TextArea, #MAX30102_TextArea, #OLED_TextArea, #HCSR501_TextArea{
   font-size: 12px;
 }
+
 #WiFi_TextArea_SSIDfromWeb, #WiFi_TextArea_PasswordfromWeb, #WiFi_TextArea_LocalTime, #WiFi_TextArea_BrowserTimeZone, #WiFi_TextArea_UTCTime{
   height: 20px;
   font-size: 10px;
