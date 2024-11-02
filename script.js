@@ -86,10 +86,11 @@ function onDisconnected(event) {
 }
 
 async function send(data) {
-    if (! gattCharacteristic) {
+    if (!gattCharacteristic) {
         console.log("GATT Characteristic not found.");
         return;
     }
+    data += '\n';  // Append newline character to data
     console.log("You -> " + data);
     let start = 0;
     const dataLength = data.length;
@@ -103,10 +104,26 @@ async function send(data) {
         }
         start += 16;
     }
-    try {
-        await gattCharacteristic.writeValue(str2ab('\n'));
-    } catch (error) {
-        console.error("Error writing newline to characteristic:", error);
+}
+
+async function send(data) {
+    if (!gattCharacteristic) {
+        console.log("GATT Characteristic not found.");
+        return;
+    }
+    data += '\n';
+    console.log("You -> " + data);
+    let start = 0;
+    const dataLength = data.length;
+    while (start < dataLength) {
+        let subStr = data.substring(start, start + 16);
+        try {
+            await gattCharacteristic.writeValue(str2ab(subStr));
+        } catch (error) {
+            console.error("Error writing to characteristic:", error);
+            break;
+        }
+        start += 16;
     }
 }
 
