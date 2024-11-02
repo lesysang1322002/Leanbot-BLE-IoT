@@ -119,9 +119,9 @@ function str2ab(str){
     return buf;
 }
 
-function UI(elmentID) {
-    return document.getElementById(elmentID);
-}
+// function UI(elmentID) {
+//     return document.getElementById(elmentID);
+// }
 
 const buttons = document.querySelectorAll('.btn-primary-test');
 buttons.forEach(button => {
@@ -189,7 +189,11 @@ function handleChangedValue(event) {
 
     string += valueString;
     const lines = string.split(/[\r\n]+/);
+    // Ex1: "line1\nline2\nline3\n".split(/[\r\n]+/) => ["line1", "line2", "line3", ""]
+    // Ex2: "line1\nline2\nline3".split(/[\r\n]+/) => ["line1", "line2", "line3"]
     string = lines.pop() || "";
+    // Ex1.1: lines.pop() => ""
+    // Ex2.1: lines.pop() => "line3"
     lines.forEach(line => {
         if (line) { 
             console.log("Nano > " + line);
@@ -331,9 +335,9 @@ function BME280_button(){
 //********WiFi********//
 function WiFi_handle(arrString) {
     if(arrString[1] === 'to' || arrString[1] === 'Init') {
-       if(arrString[3] === 'module') UI('WiFi_TextArea').value = arrString.join(" ") + '\n';
-       else if (arrString[3] === 'network') UI('WiFi_TextArea').value += arrString.join(" ") + '\n';
-       else UI('WiFi_TextArea').value += arrString.join(" ");
+       if(arrString[3] === 'module') UI('WiFi_TextArea').value = arrString.join(" ") + '\n'; // Ex: Msg = "Connecting to WiFi module ... OK"
+       else if (arrString[3] === 'network') UI('WiFi_TextArea').value += arrString.join(" ") + '\n'; // Ex: Msg = "Connecting to WiFi network X ... OK"
+       else UI('WiFi_TextArea').value += arrString.join(" "); // Ex: Msg = "WiFi Init Ok"
        return;
     }
 
@@ -344,12 +348,13 @@ function WiFi_handle(arrString) {
         UI('WiFi_TextArea_BrowserTimeZone').value = parts[5].substring(3, 8);
     }
 
+    // Tính toán giờ địa phương
     const localTime = utcDate.toLocaleString('en-GB', { hour12: false });  
-    let [datePart, timePart] = localTime.split(', ');
-    datePart = datePart.replace(/\//g, '-');
-    const [day, month, year] = datePart.split('-');
-    const formattedDate = `${year}-${month}-${day}`;
-    const formattedLocalTime = `${formattedDate} ${timePart}`;
+    let [datePart, timePart] = localTime.split(', '); // Tách ngày giờ : "10/11/2021, 10:10:10"
+    datePart = datePart.replace(/\//g, '-');          // Thay thế '/' bằng '-' : "10-11-2021"
+    const [day, month, year] = datePart.split('-');  // Tách ngày, tháng, năm thành mảng : ["10", "11", "2021"]
+    const formattedDate = `${year}-${month}-${day}`; // Định dạng ngày Ex: "2021-11-10"
+    const formattedLocalTime = `${formattedDate} ${timePart}`; // Kết hợp ngày và giờ : "2021-11-10 10:10:10"
 
     UI('WiFi_TextArea_LocalTime').value = formattedLocalTime;
 }
