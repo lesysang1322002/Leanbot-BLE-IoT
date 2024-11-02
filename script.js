@@ -34,10 +34,11 @@ function requestBluetoothDevice() {
         return service.getCharacteristic(bleCharacteristic);
     })
     .then(characteristic => {
-        logstatus(dev.name + " - IoT Modules");
+        // logstatus(dev.name + " - IoT Modules");
+        logstatusWebName(dev.name);
         checkMessageWithin5Seconds();
         document.getElementById("buttonText").innerText = "Rescan";
-        enableButtons();
+        // enableButtons();
         gattCharacteristic = characteristic;
         gattCharacteristic.addEventListener('characteristicvaluechanged', handleChangedValue);   
         return gattCharacteristic.startNotifications();
@@ -52,6 +53,11 @@ function requestBluetoothDevice() {
         }
     });
 }}
+
+function logstatusWebName(text){
+    logstatus(text + " - IoT Modules");
+    enableButtons();
+}
 
 function checkMessageWithin5Seconds() {
     // Thiết lập hàm setTimeout để kết thúc sau 5 giây
