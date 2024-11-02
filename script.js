@@ -283,13 +283,13 @@ function OLED_button(){
 
 //********SoilMoisture********//
 let SoilMoisture_isFirstRead = true;
-let SoilMoisture_IntMin = 1024;
+let SoilMoisture_IntMin = 1023;
 let SoilMoisture_IntMax = 0;
 
 function SoilMoisture_handle(arrString) {
     const moistureValue = parseInt(arrString[1]);
 
-    if (moistureValue === 1024) {
+    if (moistureValue === 1023) {
         let msg = SoilMoisture_isFirstRead ? "Soil Moisture not detected" : "Soil Moisture Sensor not plugged in";
         UI('SoilMoisture_TextArea').value = msg;
         UI('SoilMoisture_TextArea_Min').value = "";
@@ -313,7 +313,7 @@ function SoilMoisture_handle(arrString) {
 
 function SoilMoisture_button() {
     send("SoilMoisture Test");
-    SoilMoisture_IntMin = 1024;
+    SoilMoisture_IntMin = 1023;
     SoilMoisture_IntMax = 0;
 }
 
