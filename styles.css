@@ -305,14 +305,26 @@ label {
   align-items: center;
 }
 
+.LinkWeb {
+  display: flex;
+  height: 10px;
+  margin: 0px 10px;
+  justify-content: center;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
 @media screen and (orientation: landscape) {
-  .item {
+  .item{
       width: calc(33.33% - 20px);
       height: 42vh;
   }
+  .LinkWeb {
+    width: calc(33.33% - 20px);
+  }
 }
 @media screen and (orientation: portrait) {
-  .item {
+  .item,.LinkWeb {
       width: calc(100% - 20px);
   }
   #navbarTitle {
