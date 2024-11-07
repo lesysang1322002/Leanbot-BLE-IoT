@@ -132,3 +132,20 @@ function toggleFunction() {
 function UI(elmentID) {
     return document.getElementById(elmentID);
 }
+
+let string = "";
+function handleChangedValue(event) {
+    const data = event.target.value;
+    const dataArray = new Uint8Array(data.buffer);
+    const textDecoder = new TextDecoder('utf-8');
+    const valueString = textDecoder.decode(dataArray);
+
+    string += valueString;
+    const lines = string.split(/[\r\n]+/);
+    string = lines.pop() || "";
+    lines.forEach(line => {
+        if (line) { 
+            handleSerialLine(line);
+        }
+    });
+}
