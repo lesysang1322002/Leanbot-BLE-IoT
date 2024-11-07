@@ -113,7 +113,7 @@ p {
   color: #ffffff !important;
   background-color: #1d78bd !important;
   border-color: #000000 !important;
-  width: 100px;
+  width: 120px;
   height: auto;
   margin-top: auto !important;
 }
@@ -132,7 +132,7 @@ button:disabled {
 label {
   font-weight: bold;
   margin-bottom: 0px;
-  font-family: 'Roboto Mono', monospace;
+  /* font-family: 'Roboto Mono', monospace; */
   padding-right: 4px;
 }
 .container {
@@ -261,7 +261,7 @@ label {
 }
 
 #ESP-button{
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 #HC-SR501-button, #OLED-button, #MAX30102-button{
@@ -305,6 +305,33 @@ label {
   align-items: center;
 }
 
+.column_alignRight{
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+  justify-content: space-between;
+}
+
+.column_alignLeft{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.column_alignLeft textarea{
+  margin-top: 4px;
+}
+
+.column_alignLeft input{
+  margin-top: 4px;
+}
+
+.column_alignRight label{
+  font-weight: bold;
+  padding-right: 3px;
+  margin-bottom: 0px;
+}
+
 .LinkWeb {
   display: flex;
   height: 10px;
@@ -316,8 +343,8 @@ label {
 
 @media screen and (orientation: landscape) {
   .item{
-      width: calc(33.33% - 20px);
-      height: 42vh;
+    width: calc(33.33% - 20px);
+    height: 42vh;
   }
   .LinkWeb {
     width: calc(33.33% - 20px);

@@ -1,150 +1,150 @@
-const bleService = '0000ffe0-0000-1000-8000-00805f9b34fb';
-const bleCharacteristic = '0000ffe1-0000-1000-8000-00805f9b34fb';
-let gattCharacteristic;
+// let gattCharacteristic;
 
-function isWebBluetoothEnabled() {
-    if (! navigator.bluetooth) {
-        console.log('Web Bluetooth API is not available in this browser!');
-        return false;
-    }
-    return true;
-}
+// function isWebBluetoothEnabled() {
+//     if (! navigator.bluetooth) {
+//         console.log('Web Bluetooth API is not available in this browser!');
+//         return false;
+//     }
+//     return true;
+// }
 
-function requestBluetoothDevice() {
-    if (isWebBluetoothEnabled()){
-        logstatus('Finding...');
-        navigator.bluetooth.requestDevice({
-        filters: [{ services: ['0000ffe0-0000-1000-8000-00805f9b34fb'] }] 
-    })         
-    .then(device => {
-        device.addEventListener('gattserverdisconnected', onDisconnected);
-        dev=device;
-        logstatus("Connect to " + dev.name);
-        console.log('Connecting to', dev);
-        return device.gatt.connect();
-    })
-    .then(server => {
-        console.log('Getting GATT Service...');
-        logstatus('Getting Service...');
-        return server.getPrimaryService(bleService);
-    })
-    .then(service => {
-        console.log('Getting GATT Characteristic...');
-        logstatus('Geting Characteristic...');
-        return service.getCharacteristic(bleCharacteristic);
-    })
-    .then(characteristic => {
-        // logstatus(dev.name + " - IoT Modules");
-        logstatusWebName(dev.name);
-        checkMessageWithin5Seconds();
-        document.getElementById("buttonText").innerText = "Rescan";
-        // enableButtons();
-        gattCharacteristic = characteristic;
-        gattCharacteristic.addEventListener('characteristicvaluechanged', handleChangedValue);   
-        return gattCharacteristic.startNotifications();
-    })
-    .catch(error => {
-        if (error instanceof DOMException && error.name === 'NotFoundError' && error.message === 'User cancelled the requestDevice() chooser.') {
-            console.log("User has canceled the device connection request.");
-            logstatus("SCAN to connect");
-        } else {
-            console.log("Unable to connect to device: " + error);
-            logstatus("ERROR");
-        }
-    });
-}}
+// function requestBluetoothDevice() {
+//     if (isWebBluetoothEnabled()){
+//         logstatus('Finding...');
+//         navigator.bluetooth.requestDevice({
+//         filters: [{ services: ['0000ffe0-0000-1000-8000-00805f9b34fb'] }] 
+//     })         
+//     .then(device => {
+//         device.addEventListener('gattserverdisconnected', onDisconnected);
+//         dev=device;
+//         logstatus("Connect to " + dev.name);
+//         console.log('Connecting to', dev);
+//         return device.gatt.connect();
+//     })
+//     .then(server => {
+//         console.log('Getting GATT Service...');
+//         logstatus('Getting Service...');
+//         return server.getPrimaryService('0000ffe0-0000-1000-8000-00805f9b34fb');
+//     })
+//     .then(service => {
+//         console.log('Getting GATT Characteristic...');
+//         logstatus('Geting Characteristic...');
+//         return service.getCharacteristic('0000ffe1-0000-1000-8000-00805f9b34fb');
+//     })
+//     .then(characteristic => {
+//         logstatusWebName(dev.name);
+//         checkMessageWithin5Seconds();
+//         UI("buttonText").innerText = "Rescan";
+//         gattCharacteristic = characteristic;
+//         gattCharacteristic.addEventListener('characteristicvaluechanged', handleChangedValue);   
+//         return gattCharacteristic.startNotifications();
+//     })
+//     .catch(error => {
+//         if (error instanceof DOMException && error.name === 'NotFoundError' && error.message === 'User cancelled the requestDevice() chooser.') {
+//             console.log("User has canceled the device connection request.");
+//             logstatus("SCAN to connect");
+//         } else {
+//             console.log("Unable to connect to device: " + error);
+//             logstatus("ERROR");
+//         }
+//     });
+// }}
 
 function logstatusWebName(text){
     logstatus(text + " - IoT Modules");
     enableButtons();
 }
 
-function checkMessageWithin5Seconds() {
-    // Thiết lập hàm setTimeout để kết thúc sau 5 giây
-    timeoutCheckMessage = setTimeout(function() {
-    console.log("5 seconds timeout, message incorrect.");
-    // Hiển thị info box
-    UI('infopopup').style.display = "block";
-    document.addEventListener("click", function(event) {
-        if (! infoBox.contains(event.target)) {
-            infoBox.style.display = "none";
-        }
-    });
-    }, 5000);
-}
-
-function logstatus(text){
-    UI('navbarTitle').textContent = text;
-}
-
-function disconnect(){
-    logstatus("SCAN to connect");
-    console.log("Disconnected from: " + dev.name);
-    return dev.gatt.disconnect();
-}
-
-function onDisconnected(event) {
-    const device = event.target;
-    logstatus("SCAN to connect");
-    resetVariable();
-    UI('buttonText').innerText = "Scan";
-    console.log(`Device ${device.name} is disconnected.`);
-}
-
-async function send(data) {
-    if (!gattCharacteristic) {
-        console.log("GATT Characteristic not found.");
-        return;
-    }
-    data += '\n';  // Append newline character to data
-    console.log("You -> " + data);
-    let start = 0;
-    const dataLength = data.length;
-    while (start < dataLength) {
-        let subStr = data.substring(start, start + 16);
-        try {
-            await gattCharacteristic.writeValue(str2ab(subStr));
-        } catch (error) {
-            console.error("Error writing to characteristic:", error);
-            break;
-        }
-        start += 16;
-    }
-}
-
-async function send(data) {
-    if (!gattCharacteristic) {
-        console.log("GATT Characteristic not found.");
-        return;
-    }
-    data += '\n';
-    console.log("You -> " + data);
-    let start = 0;
-    const dataLength = data.length;
-    while (start < dataLength) {
-        let subStr = data.substring(start, start + 16);
-        try {
-            await gattCharacteristic.writeValue(str2ab(subStr));
-        } catch (error) {
-            console.error("Error writing to characteristic:", error);
-            break;
-        }
-        start += 16;
-    }
-}
-
-function str2ab(str){
-    let buf = new ArrayBuffer(str.length);
-    let bufView = new Uint8Array(buf);
-    for (var i = 0, l = str.length; i < l; i++) {
-        bufView[i] = str.charCodeAt(i);
-    }
-    return buf;
-}
-
-// function UI(elmentID) {
-//     return document.getElementById(elmentID);
+// function checkMessageWithin5Seconds() {
+//     // Thiết lập hàm setTimeout để kết thúc sau 5 giây
+//     timeoutCheckMessage = setTimeout(function() {
+//     console.log("5 seconds timeout, message incorrect.");
+//     // Hiển thị info box
+//     UI('infopopup').style.display = "block";
+//     document.addEventListener("click", function(event) {
+//         if (! infoBox.contains(event.target)) {
+//             infoBox.style.display = "none";
+//         }
+//     });
+//     }, 5000);
 // }
+
+// function logstatus(text){
+//     UI('navbarTitle').textContent = text;
+// }
+
+// function disconnect(){
+//     logstatus("SCAN to connect");
+//     console.log("Disconnected from: " + dev.name);
+//     return dev.gatt.disconnect();
+// }
+
+// function onDisconnected(event) {
+//     const device = event.target;
+//     logstatus("SCAN to connect");
+//     resetVariable();
+//     UI('buttonText').innerText = "Scan";
+//     console.log(`Device ${device.name} is disconnected.`);
+// }
+
+// async function send(data) {
+//     if (!gattCharacteristic) {
+//         console.log("GATT Characteristic not found.");
+//         return;
+//     }
+//     data += '\n';  // Append newline character to data
+//     console.log("You -> " + data);
+//     let start = 0;
+//     const dataLength = data.length;
+//     while (start < dataLength) {
+//         let subStr = data.substring(start, start + 16);
+//         try {
+//             await gattCharacteristic.writeValue(str2ab(subStr));
+//         } catch (error) {
+//             console.error("Error writing to characteristic:", error);
+//             break;
+//         }
+//         start += 16;
+//     }
+// }
+
+// function str2ab(str){
+//     let buf = new ArrayBuffer(str.length);
+//     let bufView = new Uint8Array(buf);
+//     for (var i = 0, l = str.length; i < l; i++) {
+//         bufView[i] = str.charCodeAt(i);
+//     }
+//     return buf;
+// }
+
+// function toggleFunction() {
+//     if (UI('toggleButton').innerText == "Scan") {
+//         requestBluetoothDevice();
+//         return;
+//     } 
+//     disconnect();
+//     requestBluetoothDevice();
+//     resetVariable();
+// }
+
+function resetVariable(){
+    SoilMoisture_isFirstRead = true;
+    SoilMoisture_IntMin = 1023;
+    SoilMoisture_IntMax = 0;
+    SoilMoisture_checkInitError = false;
+    MAX30102_checkInitError = false;
+    BME280_isFirstRead = true;
+    checkMsg = false;
+    disableButtons();
+    clearTextArea();
+    clearTimeout(timeoutCheckMessage);
+    document.querySelectorAll('.item').forEach(item => {
+        item.classList.remove('active');
+    });
+    UI('HCSR501_Square').style.backgroundColor = "transparent";
+    UI('MAX30102_Square').style.backgroundColor = "transparent";
+    UI('SoilMoisture_Progress').value = 0;
+}
 
 const buttons = document.querySelectorAll('.btn-primary-test');
 buttons.forEach(button => {
@@ -163,31 +163,6 @@ function disableButtons() {
     });
 }
 
-function toggleFunction() {
-    if (UI('toggleButton').innerText == "Scan") {
-        requestBluetoothDevice();
-        return;
-    } 
-    disconnect();
-    requestBluetoothDevice();
-    resetVariable();
-}
-
-function resetVariable(){
-    SoilMoisture_isFirstRead = true;
-    BME280_isFirstRead = true;
-    checkMsg = false;
-    disableButtons();
-    clearTextArea();
-    clearTimeout(timeoutCheckMessage);
-    document.querySelectorAll('.item').forEach(item => {
-        item.classList.remove('active');
-    });
-    UI('HCSR501_Square').style.backgroundColor = "transparent";
-    UI('MAX30102_Square').style.backgroundColor = "transparent";
-    UI('SoilMoisture_Progress').value = 0;
-}
-
 function clearTextArea() {
     const textAreas = [
         'HCSR501_TextArea', 'OLED_TextArea', 'SoilMoisture_TextArea', 'BME280_TextArea', 'WiFi_TextArea', 'MAX30102_TextArea', 
@@ -203,27 +178,27 @@ function clearTextArea() {
     });
 }
 
-let string = "";
-function handleChangedValue(event) {
-    const data = event.target.value;
-    const dataArray = new Uint8Array(data.buffer);
-    const textDecoder = new TextDecoder('utf-8');
-    const valueString = textDecoder.decode(dataArray);
+// let string = "";
+// function handleChangedValue(event) {
+//     const data = event.target.value;
+//     const dataArray = new Uint8Array(data.buffer);
+//     const textDecoder = new TextDecoder('utf-8');
+//     const valueString = textDecoder.decode(dataArray);
 
-    string += valueString;
-    const lines = string.split(/[\r\n]+/);
-    // Ex1: "line1\nline2\nline3\n".split(/[\r\n]+/) => ["line1", "line2", "line3", ""]
-    // Ex2: "line1\nline2\nline3".split(/[\r\n]+/) => ["line1", "line2", "line3"]
-    string = lines.pop() || "";
-    // Ex1.1: lines.pop() => ""
-    // Ex2.1: lines.pop() => "line3"
-    lines.forEach(line => {
-        if (line) { 
-            console.log("Nano > " + line);
-            handleSerialLine(line);
-        }
-    });
-}
+//     string += valueString;
+//     const lines = string.split(/[\r\n]+/);
+//     // Ex1: "line1\nline2\nline3\n".split(/[\r\n]+/) => ["line1", "line2", "line3", ""]
+//     // Ex2: "line1\nline2\nline3".split(/[\r\n]+/) => ["line1", "line2", "line3"]
+//     string = lines.pop() || "";
+//     // Ex1.1: lines.pop() => ""
+//     // Ex2.1: lines.pop() => "line3"
+//     lines.forEach(line => {
+//         if (line) { 
+//             console.log("Nano > " + line);
+//             handleSerialLine(line);
+//         }
+//     });
+// }
 
 function handleSerialLine(line) {
     if (! line) return;
@@ -246,7 +221,7 @@ function handleSerialLine(line) {
 
 const msgFromLeanbot = "Test IoT Modules";
 let checkMsg = false;
-let timeoutCheckMessage;
+// let timeoutCheckMessage;
 
 function checkCodefromLeanbot(line) { 
     if (line !== msgFromLeanbot || checkMsg) return;
@@ -268,12 +243,10 @@ function HCSR501_button(){
 
 //********OLED********//
 function OLED_handle(arrString) {
-    if (arrString[2] !== 'Error') {
-        UI('OLED_TextArea').value = arrString[1] + " " + arrString[2];
-        return;
-    }
-    UI('OLED_TextArea').value = "OLED not detected";
-    UI('OLED-button').disabled = true;
+    UI('OLED_TextArea').value = arrString.slice(1, arrString.length).join(' ');
+    if (arrString[2] !== 'Error') return;
+    UI('OLED-button').disabled = true; 
+    UI('OLED-button').textContent = "Not detected";
 }
 
 function OLED_button(){
@@ -285,25 +258,26 @@ function OLED_button(){
 let SoilMoisture_isFirstRead = true;
 let SoilMoisture_IntMin = 1023;
 let SoilMoisture_IntMax = 0;
+let SoilMoisture_checkInitError = false;
 
 function SoilMoisture_handle(arrString) {
-    const moistureValue = parseInt(arrString[1]);
-
-    if (moistureValue === 1023) {
-        let msg = SoilMoisture_isFirstRead ? "Soil Moisture not detected" : "Soil Moisture Sensor not plugged in";
-        UI('SoilMoisture_TextArea').value = msg;
-        UI('SoilMoisture_TextArea_Min').value = "";
-        UI('SoilMoisture_TextArea_Max').value = "";
-        UI('SoilMoisture_TextArea_Range').value = "";
-        UI('SoilMoisture-button').disabled = true;
+    if (SoilMoisture_checkInitError) return;
+    UI('SoilMoisture_TextArea').value = arrString.slice(1, arrString.length).join(' ');
+    if (arrString[1] === 'Init') {
+        if (arrString[2] === 'Error')   {
+            UI('SoilMoisture-button').disabled = true;
+            UI('SoilMoisture-button').textContent = "Not detected";
+            SoilMoisture_checkInitError = true;
+        }
         return;
     }
 
+    const moistureValue = parseInt(arrString[1]);
     SoilMoisture_IntMin = Math.min(SoilMoisture_IntMin, moistureValue);
     SoilMoisture_IntMax = Math.max(SoilMoisture_IntMax, moistureValue);
 
-    UI('SoilMoisture_TextArea').value = "Init Ok";
-    UI('SoilMoisture_TextArea').value = moistureValue;
+    // UI('SoilMoisture_TextArea').value = "Init Ok";
+    // UI('SoilMoisture_TextArea').value = moistureValue;
     UI('SoilMoisture_Progress').value = moistureValue;
     UI('SoilMoisture_TextArea_Min').value = SoilMoisture_IntMin;
     UI('SoilMoisture_TextArea_Max').value = SoilMoisture_IntMax;
@@ -320,18 +294,19 @@ function SoilMoisture_button() {
 //********BME280********//
 let BME280_isFirstRead = true;
 let BME280_RelAltRef;
-let BME280_CountValue;
+let BME280_CountValue = 0;
 let BME280_SumAlt = 0;
 
 function BME280_handle(arrString) {
-    if(arrString[2] === 'Error'){
-        UI('BME280-button').disabled = true;
-        UI('BME280_TextArea').value = "BME280 not detected";    
+    UI('BME280_TextArea').value = arrString.slice(1, arrString.length).join(' ');
+
+    if(arrString[1] === 'Init') {
+        if(arrString[2] === 'Error') {
+            UI('BME280-button').disabled = true;
+            UI('BME280-button').textContent = "Not detected";
+        }
         return;
     }
-    UI('BME280_TextArea').value = arrString.slice(1, 9).join(' ');
-
-    if(arrString[1] !== 'Tem') return;
 
     UI('BME280_TextArea_Tem').value  = `${parseFloat(arrString[2]).toFixed(1)}  °C `;
     UI('BME280_TextArea_Hum').value  = `${parseFloat(arrString[4]).toFixed(1)}  %  `;
@@ -344,6 +319,7 @@ function BME280_handle(arrString) {
             BME280_RelAltRef = BME280_SumAlt / 10;
             BME280_isFirstRead = false;
         }
+        console.log("BME280_SumAlt: " + BME280_SumAlt);
     }
     else UI('BME280_TextArea_RelAlt').value = `${(BME280_ALtRawFloat - BME280_RelAltRef).toFixed(2)} m  `;
 }
@@ -399,13 +375,16 @@ async function WiFi_button(){
 }
 
 //********MAX30102********//
+let MAX30102_checkInitError = false;
 function MAX30102_handle(arrString) {
-    UI('MAX30102_TextArea').value = arrString.slice(1, 5).join(' ');
+    if(MAX30102_checkInitError) return;
+    UI('MAX30102_TextArea').value = arrString.slice(1, arrString.length).join(' ');
 
     if(arrString[1] === 'Init'){
         if(arrString[2] === 'Error'){
             UI('MAX30102-button').disabled = true;
-            UI('MAX30102_TextArea').value = "MAX30102 not detected";
+            UI('MAX30102-button').textContent = "Not detected";
+            MAX30102_checkInitError = true;
         }
         return;
     }
