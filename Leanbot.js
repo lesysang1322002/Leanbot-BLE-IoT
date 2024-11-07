@@ -51,10 +51,6 @@ function requestBluetoothDevice() {
     });
 }}
 
-function logstatusWebName(text){
-    logstatus(text + " - Standard Modules");
-}
-
 function checkMessageWithin5Seconds() {
     // Thiết lập hàm setTimeout để kết thúc sau 5 giây
     timeoutCheckMessage = setTimeout(function() {
