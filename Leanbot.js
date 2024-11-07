@@ -128,3 +128,7 @@ function toggleFunction() {
     requestBluetoothDevice();
     resetVariable();
 }
+
+function UI(elmentID) {
+    return document.getElementById(elmentID);
+}
