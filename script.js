@@ -1,3 +1,8 @@
+function logstatusWebName(text){
+    logstatus(text + " - IoT Modules");
+    enableButtons();
+}
+
 function resetVariable(){
     SoilMoisture_isFirstRead = true;
     SoilMoisture_IntMin = 1023;
